@@ -1,0 +1,6 @@
+.top__nav-wrapper-blur {
+    backdrop-filter: blur(10px);
+    color: azure !important;
+    border-bottom: 3px solid;
+    border-color: #000;
+}
