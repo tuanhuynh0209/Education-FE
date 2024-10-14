@@ -1,10 +1,42 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useState } from 'react'
 
 const EditInformation = () => {
+  const [formData, setFormData] = useState({
+    year: '',
+    fullName: '',
+    employeeId: '',
+    base: '',
+    unit: '',
+    official: '',
+    level: '',
+    researchHours: '',
+    caseReduction: '',
+    caseDays: '',
+    researchQuota: '',
+    note: '',
+  })
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await axios.post('YOUR_API_ENDPOINT', formData)
+      console.log('Response:', response.data)
+      // Xử lý kết quả sau khi gửi thành công
+    } catch (error) {
+      console.error('Error:', error)
+      // Xử lý lỗi
+    }
+  }
   return (
     <div className='mx-8 w-full '>
       <div className='w-full'>
-        <span className='text-3xl font-bold'>Chỉnh sửa thông tin cá nhân</span>
+        <span className='text-3xl font-bold'>Thêm thông tin cá nhân</span>
         <hr className='my-4 border-gray-300' />
       </div>
       <div className='w-full h-full p-10 bg-white shadow-lg rounded-lg'>
@@ -120,6 +152,16 @@ const EditInformation = () => {
           </div>
           <div className="flex flex-col gap-1">
             <div className="flex gap-2 items-center">
+              <p className='font-medium text-lg'>Viên chức cơ hữu</p>
+            </div>
+            <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300">
+              <option value="">Chọn thông tin</option>
+              <option value="caseUMC">Viên chức hữu cơ UMC</option>
+              <option value="caseUMP">Giảng viên hữu cơ UMP</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="flex gap-2 items-center">
               <p className='font-medium text-lg'>Chức danh, trình độ</p>
             </div>
             <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300">
@@ -173,7 +215,7 @@ const EditInformation = () => {
           </div>
           <div className='w-full flex justify-center mt-6'>
             <button className='bg-[#F9A150] hover:bg-[#e08f40] rounded-lg p-4 text-lg w-fit px-20 font-bold text-white outline-none transition duration-300'>
-              Chỉnh sửa thông tin cá nhân
+              Hoàn tất
             </button>
           </div>
         </div>

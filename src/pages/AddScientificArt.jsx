@@ -100,6 +100,13 @@ const AddScientificArt = () => {
                         </select>
                     </div>
 
+                    <div className="flex flex-col gap-1">
+                        <div className="flex gap-2 items-center">
+                            <p className='font-medium text-lg'>Tên bài báo khoa học</p>
+                        </div>
+                        <input type="text" className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" placeholder="Nhập tên bài báo" />
+                    </div>
+
                     {/* DOI field */}
                     <div className="flex flex-col gap-1">
                         <div className="flex gap-2 items-center">
