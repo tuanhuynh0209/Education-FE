@@ -33,7 +33,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-black opacity-30"></div>
         <div className="relative z-10 text-center text-white">
           <p className="text-6xl font-bold">Quản lý đào tạo và nghiên cứu khoa học</p>
-          <p className="mt-2">Tin nổi bật: NGUYỄN ANH LỮ: Sáng kiến cải tiến thiết bị Y khoa hỗ trợ nhận diện u bướu...</p>
+          <p className="mt-2 text-2xl">BỆNH VIỆN ĐẠI HỌC Y DƯỢC THÀNH PHỐ HỒ CHÍ MINH CƠ SỞ 2</p>
         </div>
       </header>
 

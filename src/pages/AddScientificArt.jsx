@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-
+//  sử dụng localStorage để lưu msnv sau khi đăng nhập sau đó getItem khi thêm bài báo khoa học
 const AddScientificArt = () => {
     const [activity, setActivity] = useState('');
     const [impactFactor, setImpactFactor] = useState('');

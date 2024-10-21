@@ -2,6 +2,72 @@ import axios from 'axios'
 import React, { useState } from 'react'
 
 const EditInformation = () => {
+  const units = [
+    { value: "unitInf1", label: "Ban chuyên gia" },
+    { value: "unitInf2", label: "Ban Giám đốc" },
+    { value: "unitInf3", label: "Đơn vị Can thiệp nội mạch" },
+    { value: "unitInf4", label: "Đơn vị Hình ảnh tim mạch" },
+    { value: "unitInf5", label: "Đơn vị Pháp chế" },
+    { value: "unitInf6", label: "Đơn vị Quản lý đấu thầu" },
+    { value: "unitInf7", label: "Khoa Cấp cứu" },
+    { value: "unitInf8", label: "Khoa Chuẩn đoán hình ảnh" },
+    { value: "unitInf9", label: "Khoa Chấn thương chỉnh hình" },
+    { value: "unitInf10", label: "Khoa Da liễu - Thẩm mỹ da" },
+    { value: "unitInf11", label: "Khoa Dinh dưỡng - Tiết chế" },
+    { value: "unitInf12", label: "Khoa Dược" },
+    { value: "unitInf13", label: "Khoa Gây mê - Hồi sức" },
+    { value: "unitInf14", label: "Khoa Giải phẫu bệnh" },
+    { value: "unitInf15", label: "Khoa Hậu môn - Trực tràng" },
+    { value: "unitInf16", label: "Khoa Hô hấp" },
+    { value: "unitInf17", label: "Khoa Hóa trị ung thư" },
+    { value: "unitInf18", label: "Khoa hồi sức tích cực" },
+    { value: "unitInf19", label: "Khoa Khám bệnh" },
+    { value: "unitInf20", label: "Khoa khám sức khỏe theo yêu cầu" },
+    { value: "unitInf21", label: "Khoa kiểm soát nhiễm khuẩn" },
+    { value: "unitInf22", label: "Khoa Lão - Chăm sóc giảm nhẹ" },
+    { value: "unitInf23", label: "Khoa Lồng ngực mạch máu" },
+    { value: "unitInf24", label: "Khoa Mắt" },
+    { value: "unitInf25", label: "Khoa Ngoại Gan-Mật-Tụy" },
+    { value: "unitInf26", label: "Khoa Ngoại thần kinh" },
+    { value: "unitInf27", label: "Khoa Ngoại tiêu hóa" },
+    { value: "unitInf28", label: "Khoa Niệu học chức năng" },
+    { value: "unitInf29", label: "Khoa Nội cơ xương khớp" },
+    { value: "unitInf30", label: "Khoa Nội soi" },
+    { value: "unitInf31", label: "Khoa Nội thận - Thận nhân tạo" },
+    { value: "unitInf32", label: "Khoa Nội tiết" },
+    { value: "unitInf33", label: "Khoa Nội tim mạch" },
+    { value: "unitInf34", label: "Khoa Phẫu thuật Tim mạch người lớn" },
+    { value: "unitInf35", label: "Khoa Phẫu thuật Tim trẻ em" },
+    { value: "unitInf36", label: "Khoa Phụ sản" },
+    { value: "unitInf37", label: "Khoa Hồi phục chức năng" },
+    { value: "unitInf38", label: "Khoa PTHM-Răng Hàm Mặt" },
+    { value: "unitInf39", label: "Khoa Sơ sinh" },
+    { value: "unitInf40", label: "Khoa Tai Mũi Họng" },
+    { value: "unitInf41", label: "Khoa Tạo hình thẩm mỹ" },
+    { value: "unitInf42", label: "Khoa Thăm dò chức năng Hô hấp" },
+    { value: "unitInf43", label: "Khoa Thần kinh" },
+    { value: "unitInf44", label: "Khoa Tiết niệu" },
+    { value: "unitInf45", label: "Khoa Tiêu hóa" },
+    { value: "unitInf46", label: "Khoa Tim mạch can thiệp" },
+    { value: "unitInf47", label: "Khoa Tuyến vũ" },
+    { value: "unitInf48", label: "Khoa Vi sinh" },
+    { value: "unitInf49", label: "Khoa Xét nghiệm" },
+    { value: "unitInf50", label: "Khoa Y học hạt nhân" },
+    { value: "unitInf51", label: "Phòng Bảo hiểm y tế" },
+    { value: "unitInf52", label: "Phòng Công nghệ thông tin" },
+    { value: "unitInf53", label: "Phòng Công tác xã hội" },
+    { value: "unitInf54", label: "Phòng Điều dưỡng" },
+    { value: "unitInf55", label: "Phòng Hành chính" },
+    { value: "unitInf56", label: "Phòng Kế hoạch tổng hợp" },
+    { value: "unitInf57", label: "Phòng Khoa học & Đào tạo" },
+    { value: "unitInf58", label: "Phòng Quản lý chất lượng bệnh viện" },
+    { value: "unitInf59", label: "Phòng Quản trị tòa nhà" },
+    { value: "unitInf60", label: "Phòng Tài chính kế toán" },
+    { value: "unitInf61", label: "Phòng Tổ chức Cán bộ" },
+    { value: "unitInf62", label: "Phòng Vật tư thiết bị" },
+    { value: "unitInf63", label: "Trung tâm Truyền thông" }
+  ];
+
   const [formData, setFormData] = useState({
     year: '',
     fullName: '',
@@ -45,7 +111,12 @@ const EditInformation = () => {
             <div className="flex gap-2 items-center">
               <p className='font-medium text-lg'>Năm áp dụng</p>
             </div>
-            <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300">
+            <select
+              name="year"
+              value={formData.year}
+              onChange={handleInputChange}
+              className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+            >
               <option value="">Chọn năm</option>
               {Array.from({ length: 25 }, (_, i) => new Date().getFullYear() - i).map(year => (
                 <option key={year} value={year}>{year}</option>
@@ -57,19 +128,42 @@ const EditInformation = () => {
             <div className="flex gap-2 items-center">
               <p className='font-medium text-lg'>Họ và tên</p>
             </div>
-            <input type="text" className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" placeholder='Nhập họ tên' />
+            <input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+              placeholder='Nhập họ tên'
+            />
           </div>
+
+          {/* Mã số nhân viên */}
           <div className="flex flex-col gap-1">
             <div className="flex gap-2 items-center">
               <p className='font-medium text-lg'>Mã số nhân viên</p>
             </div>
-            <input type="text" className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" placeholder='Nhập mã nhân viên' />
+            <input
+              type="text"
+              name="employeeId"
+              value={formData.employeeId}
+              onChange={handleInputChange}
+              className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+              placeholder='Nhập mã nhân viên'
+            />
           </div>
+
+          {/* Cơ sở */}
           <div className="flex flex-col gap-1">
             <div className="flex gap-2 items-center">
               <p className='font-medium text-lg'>Cơ sở</p>
             </div>
-            <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300">
+            <select
+              name="base"
+              value={formData.base}
+              onChange={handleInputChange}
+              className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+            >
               <option value="">Chọn cơ sở</option>
               <option value="baseInf1">Cơ sở 1</option>
               <option value="baseInf2">Cơ sở 2</option>
@@ -80,74 +174,15 @@ const EditInformation = () => {
             <div className="flex gap-2 items-center">
               <p className='font-medium text-lg'>Đơn vị</p>
             </div>
-            <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300">
-              {/* Các option được giữ nguyên */}
-
-              {/* 63 */}
-              <option value="">Chọn đơn vi</option>
-              <option value="unitInf1">Ban chuyên gia</option>
-              <option value="unitInf2">Ban Giám đốc</option>
-              <option value="unitInf3">Đơn vị Can thiệp nội mạch</option>
-              <option value="unitInf4">Đơn vị Hình ảnh tim mạch</option>
-              <option value="unitInf5">Đơn vị Pháp chế</option>
-              <option value="unitInf6">Đơn vị Quản lý đấu thầu</option>
-              <option value="unitInf7">Khoa Cấp cứu</option>
-              <option value="unitInf8">Khoa Chuẩn đoán hình ảnh</option>
-              <option value="unitInf9">Khoa Chấn thương chỉnh hình</option>
-              <option value="unitInf10">Khoa Da liễu - Thẩm mỹ da</option>
-              <option value="unitInf11">Khoa Dinh dưỡng - Tiết chế</option>
-              <option value="unitInf12">Khoa Dược</option>
-              <option value="unitInf13">Khoa Gây mê - Hồi sức</option>
-              <option value="unitInf14">Khoa Giải phẫu bệnh</option>
-              <option value="unitInf15">Khoa Hậu môn - Trực tràng</option>
-              <option value="unitInf16">Khoa Hô hấp</option>
-              <option value="unitInf17">Khoa Hóa trị ung thư</option>
-              <option value="unitInf18">Khoa hồi sức tích cực</option>
-              <option value="unitInf19">Khoa Khám bệnh</option>
-              <option value="unitInf20">Khoa khám sức khỏe theo yêu cầu</option>
-              <option value="unitInf21">Khoa kiểm soát nhiễm khuẩn</option>
-              <option value="unitInf22">Khoa Lão - Chăm sóc giảm nhẹ</option>
-              <option value="unitInf23">Khoa Lồng ngực mạch máu</option>
-              <option value="unitInf24">Khoa Mắt</option>
-              <option value="unitInf25">Khoa Ngoại Gan-Mật-Tụy</option>
-              <option value="unitInf26">Khoa Ngoại thần kinh</option>
-              <option value="unitInf27">Khoa Ngoại tiêu hóa</option>
-              <option value="unitInf28">Khoa Niệu học chức năng</option>
-              <option value="unitInf29">Khoa Nội cơ xương khớp</option>
-              <option value="unitInf30">Khoa Nội soi</option>
-              <option value="unitInf31">Khoa Nội thận - Thận nhân tạo</option>
-              <option value="unitInf32">Khoa Nội tiết</option>
-              <option value="unitInf33">Khoa Nội tim mạch</option>
-              <option value="unitInf34">Khoa Phẫu thuật Tim mạch người lớn</option>
-              <option value="unitInf35">Khoa Phẫu thuật Tim trẻ em</option>
-              <option value="unitInf36">Khoa Phụ sản</option>
-              <option value="unitInf37">Khoa Hồi phục chức năng</option>
-              <option value="unitInf38">Khoa PTHM-Răng Hàm Mặt</option>
-              <option value="unitInf39">Khoa Sơ sinh</option>
-              <option value="unitInf40">Khoa Tai Mũi Họng</option>
-              <option value="unitInf41">Khoa Tạo hình thẩm mỹ</option>
-              <option value="unitInf42">Khoa Thăm dò chức năng Hô hấp</option>
-              <option value="unitInf43">Khoa Thần kinh</option>
-              <option value="unitInf44">Khoa Tiết niệu</option>
-              <option value="unitInf45">Khoa Tiêu hóa</option>
-              <option value="unitInf46">Khoa Tim mạch can thiệp</option>
-              <option value="unitInf47">Khoa Tuyến vũ</option>
-              <option value="unitInf48">Khoa Vi sinh</option>
-              <option value="unitInf49">Khoa Xét nghiệm</option>
-              <option value="unitInf50">Khoa Y học hạt nhân</option>
-              <option value="unitInf51">Phòng Bảo hiểm y tế</option>
-              <option value="unitInf52">Phòng Công nghệ thông tin</option>
-              <option value="unitInf53">Phòng Công tác xã hội</option>
-              <option value="unitInf54">Phòng Điều dưỡng</option>
-              <option value="unitInf55">Phòng Hành chính</option>
-              <option value="unitInf56">Phòng Kế hoạch tổng hợp</option>
-              <option value="unitInf57">Phòng Khoa học & Đào tạo</option>
-              <option value="unitInf58">Phòng Quản lý chất lượng bệnh viện</option>
-              <option value="unitInf59">Phòng Quản trị tòa nhà</option>
-              <option value="unitInf60">Phòng Tài chính kế toán</option>
-              <option value="unitInf61">Phòng Tổ chức Cán bộ</option>
-              <option value="unitInf62">Phòng Vật tư thiết bị</option>
-              <option value="unitInf63">Trung tâm Truyền thông</option>
+            <select
+              className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+              name='unit'
+              value={formData.unit}
+              onChange={handleInputChange}>
+              <option value="">Chọn đơn vị</option>
+              {units.map((unit) => (
+                <option key={unit.value} value={unit.value}>{unit.label}</option>
+              ))}
             </select>
           </div>
           <div className="flex flex-col gap-1">
