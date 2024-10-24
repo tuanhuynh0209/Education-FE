@@ -32,7 +32,7 @@ const TopNav = () => {
             setTimeout(() => {
                 handleDialogClose();
                 setSuccessMessage('');
-            }, 2000);
+            }, 1500);
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 setErrorMessage('Người dùng đã tồn tại');
@@ -49,8 +49,9 @@ const TopNav = () => {
             const response = await axios.post('http://localhost:3001/education/login', formData);
             setSuccessMessage('Đăng nhập thành công!');
             setErrorMessage('');
-            // Lưu thông tin người dùng vào localStorage (hoặc state)
-            localStorage.setItem('userInfo', JSON.stringify(response.data));
+            const userId = response.data.msnv; // Đảm bảo rằng ID người dùng là 'msnv' hoặc tùy vào cấu trúc dữ liệu trả về
+            localStorage.setItem('userId', userId);
+            console.log(userId);
             setFormData({
                 msnv: '',
                 mat_khau: ''
@@ -58,10 +59,10 @@ const TopNav = () => {
             setTimeout(() => {
                 handleDialogClose();
                 setSuccessMessage('');
-            }, 2000);
+            }, 1500);
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                setErrorMessage(error.response.data.message); // Hiển thị lỗi từ API
+                setErrorMessage(error.response.data.message);
             } else {
                 setErrorMessage('Lỗi khi đăng nhập. Vui lòng thử lại.');
             }
@@ -125,7 +126,7 @@ const TopNav = () => {
                                 value={formData.msnv}
                                 onChange={handleChange}
                                 required
-                                placeholder="Mã nhân viên" 
+                                placeholder="Mã nhân viên"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300" />
                             <input
                                 type="password"
@@ -133,7 +134,7 @@ const TopNav = () => {
                                 value={formData.mat_khau}
                                 onChange={handleChange}
                                 required
-                                placeholder="Mật khẩu" 
+                                placeholder="Mật khẩu"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300" />
                             <button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-md hover:bg-gradient-to-l hover:from-indigo-700 hover:to-purple-700 transition duration-300">Đăng nhập</button>
                         </form>

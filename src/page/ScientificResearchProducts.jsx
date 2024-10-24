@@ -1,49 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
-
-
-const data = [
-  {
-    name: 'Trần Duy Thanh',
-    employeeId: 'A29-203',
-    action: 'Biên dịch tài liệu',
-    nameProd: 'Sáng kiến ABC',
-    certificationUnit: 'Y HN',
-    proof: 'ABC',
-    range: 'Trong nước',
-    day: '07/10/2024',
-    standardTime: 10,
-    contributionRate: 11,
-    timeRoleTemp: 2,
-  },
-  {
-    name: 'Trần Duy Thanh',
-    employeeId: 'A29-203',
-    action: 'Biên dịch tài liệu',
-    nameProd: 'Sáng kiến ABC',
-    certificationUnit: 'Y HN',
-    proof: 'ABC',
-    range: 'Trong nước',
-    day: '07/10/2024',
-    standardTime: 10,
-    contributionRate: 11,
-    timeRoleTemp: 2,
-  },
-];
-// Additional data entries here...
+import axios from 'axios';
 
 
 const ScientificResearchProducts = () => {
 
   const navigate = useNavigate();
+  const [product, setProduct] = useState([]);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  const fetchEmployeeName = async (msnv) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
+      return response.data.ho_ten;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    const fetchProduct = async() => {
+      try {
+        const response = await axios.get("http://localhost:3001/education/getAllSciPro");
+        const productWName = await Promise.all(response.data.map(async(cou) => {
+          const employeeName = await fetchEmployeeName(cou.msnv);
+          return {...cou, ho_ten: employeeName};
+        }));
+        setProduct(productWName);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchProduct();
+  },[]);
+
   const handleAddClick = () => {
     navigate('/func/scientificResearchProduct/addScientificResPro');
   };
-
-  const [expandedIndex, setExpandedIndex] = useState(null);
-
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
@@ -73,14 +67,14 @@ const ScientificResearchProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((scientificResProd, index) => (
+            {product.map((scientificResProd, index) => (
               <React.Fragment key={index}>
                 <tr className="bg-gray-800 text-white border-b-2 border-white">
                   <td className="p-2">{index + 1}</td>
-                  <td className="p-2">{scientificResProd.name}</td>
-                  <td className="p-2">{scientificResProd.employeeId}</td>
-                  <td className="p-2">{scientificResProd.action}</td>
-                  <td className="p-2">{scientificResProd.certificationUnit}</td>
+                  <td className="p-2">{scientificResProd.ho_ten}</td>
+                  <td className="p-2">{scientificResProd.msnv}</td>
+                  <td className="p-2">{scientificResProd.hoat_dong}</td>
+                  <td className="p-2">{scientificResProd.don_vi_cap_chung_nhan}</td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -94,37 +88,37 @@ const ScientificResearchProducts = () => {
                         <tbody>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Tên sản phẩm, giải pháp, nhãn hiệu đã được cấp chứng nhận hoặc giới thiệu tại hội chợ, triển lãm</td>
-                            <td className="text-gray-600 py-2">{scientificResProd.nameProd}</td>
+                            <td className="text-gray-600 py-2">{scientificResProd.ten_san_pham}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Minh chứng</td>
-                            <td className="text-gray-600 py-2">{scientificResProd.proof}</td>
+                            <td className="text-gray-600 py-2">{scientificResProd.minh_chung}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Phạm vi</td>
-                            <td className="text-gray-600 py-2">{scientificResProd.range}</td>
+                            <td className="text-gray-600 py-2">{scientificResProd.pham_vi}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Ngày</td>
-                            <td className="text-gray-600 py-2">{scientificResProd.day}</td>
+                            <td className="text-gray-600 py-2">{scientificResProd.ngay}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn hoạt động</td>
-                            <td className="text-gray-600 py-2">{scientificResProd.standardTime}</td>
+                            <td className="text-gray-600 py-2">{scientificResProd.gio_chuan_hoat_dong}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tỷ lệ đóng góp theo hồ sơ</td>
-                            <td className="text-gray-600 py-2">{scientificResProd.contributionRate}</td>
+                            <td className="text-gray-600 py-2">{scientificResProd.ty_le_dong_gop}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn quy đổi theo vai trò (tạm tính)</td>
-                            <td className="text-gray-600 py-2">{scientificResProd.timeRoleTemp}</td>
+                            <td className="text-gray-600 py-2">{scientificResProd.gio_quy_doi}</td>
                           </tr>
                         </tbody>
                       </table>

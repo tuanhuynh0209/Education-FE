@@ -1,150 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
-
-
-const data = [
-  {
-    name: 'Trần Duy Thanh',
-    employeeId: 'A29-203',
-    reprint: 'tái bản',
-    action: 'Biên dịch tài liệu',
-    document: 'Nghiên cứu khoa học',
-    totalPage: 100,
-    language: 'Tiếng Việt',
-    dayReprint: '04/10/2024',
-    standardTime: 10,
-    role: 'Thành viên biên soạn bao gồm cả chủ biên',
-    totalMem: 200,
-    totalPageInCharge: 11,
-    contributionRate: 11,
-    timeRole: 10,
-  },
-  {
-    name: 'Tiêu Trí Quang',
-    employeeId: 'A29-204',
-    reprint: 'tái bản',
-    action: 'Biên dịch tài liệu',
-    document: 'Nghiên cứu khoa học',
-    totalPage: 100,
-    language: 'Tiếng Việt',
-    dayReprint: '04/10/2024',
-    standardTime: 10,
-    role: 'Thành viên biên soạn bao gồm cả chủ biên',
-    totalMem: 200,
-    totalPageInCharge: 11,
-    contributionRate: 11,
-    timeRole: 10,
-  },
-  {
-    name: 'Đặng Duy Thái',
-    employeeId: 'A29-205',
-    reprint: 'tái bản',
-    action: 'Biên dịch tài liệu',
-    document: 'Nghiên cứu khoa học',
-    totalPage: 100,
-    language: 'Tiếng Việt',
-    dayReprint: '04/10/2024',
-    standardTime: 10,
-    role: 'Thành viên biên soạn bao gồm cả chủ biên',
-    totalMem: 200,
-    totalPageInCharge: 11,
-    contributionRate: 11,
-    timeRole: 10,
-  },
-  {
-    name: 'Nguyễn Thành Duy',
-    employeeId: 'A29-204',
-    reprint: 'tái bản',
-    action: 'Biên dịch tài liệu',
-    document: 'Nghiên cứu khoa học',
-    totalPage: 100,
-    language: 'Tiếng Việt',
-    dayReprint: '04/10/2024',
-    standardTime: 10,
-    role: 'Thành viên biên soạn bao gồm cả chủ biên',
-    totalMem: 200,
-    totalPageInCharge: 11,
-    contributionRate: 11,
-    timeRole: 10,
-  },
-  {
-    name: 'Nguyễn Đức Vinh',
-    employeeId: 'A29-205',
-    reprint: 'tái bản',
-    action: 'Biên dịch tài liệu',
-    document: 'Nghiên cứu khoa học',
-    totalPage: 100,
-    language: 'Tiếng Việt',
-    dayReprint: '04/10/2024',
-    standardTime: 10,
-    role: 'Thành viên biên soạn bao gồm cả chủ biên',
-    totalMem: 200,
-    totalPageInCharge: 11,
-    contributionRate: 11,
-    timeRole: 10,
-  },
-  {
-    name: 'Ngô Trần Hoàng Phát',
-    employeeId: 'A29-204',
-    reprint: 'tái bản',
-    action: 'Biên dịch tài liệu',
-    document: 'Nghiên cứu khoa học',
-    totalPage: 100,
-    language: 'Tiếng Việt',
-    dayReprint: '04/10/2024',
-    standardTime: 10,
-    role: 'Thành viên biên soạn bao gồm cả chủ biên',
-    totalMem: 200,
-    totalPageInCharge: 11,
-    contributionRate: 11,
-    timeRole: 10,
-  },
-  {
-    name: 'Huỳnh Vũ Anh Tuấn',
-    employeeId: 'A29-205',
-    reprint: 'tái bản',
-    action: 'Biên dịch tài liệu',
-    document: 'Nghiên cứu khoa học',
-    totalPage: 100,
-    language: 'Tiếng Việt',
-    dayReprint: '04/10/2024',
-    standardTime: 10,
-    role: 'Thành viên biên soạn bao gồm cả chủ biên',
-    totalMem: 200,
-    totalPageInCharge: 11,
-    contributionRate: 11,
-    timeRole: 10,
-  },
-  {
-    name: 'Huỳnh Vũ Anh Tuấn',
-    employeeId: 'A29-205',
-    reprint: 'tái bản',
-    action: 'Biên dịch tài liệu',
-    document: 'Nghiên cứu khoa học',
-    totalPage: 100,
-    language: 'Tiếng Việt',
-    dayReprint: '04/10/2024',
-    standardTime: 10,
-    role: 'Thành viên biên soạn bao gồm cả chủ biên',
-    totalMem: 200,
-    totalPageInCharge: 11,
-    contributionRate: 11,
-    timeRole: 10,
-  }
-];
-// Additional data entries here...
+import axios from 'axios';
 
 
 const Document = () => {
 
   const navigate = useNavigate();
+  const [documents, setDocumnet] = useState([]);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  const fetchEmployeeName = async (msnv) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
+      return response.data.ho_ten;
+    } catch (err) {
+      console.error(err);
+      return '';
+    }
+  };
+  
+
+  useEffect(() => {
+    const fetchDocument = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/education/getAllDou");
+        console.log(response);
+        const documentsWithNames = await Promise.all(response.data.map(async (doc) => {
+          const employeeName = await fetchEmployeeName(doc.msnv);
+          return { ...doc, ho_ten: employeeName };
+        }));
+        setDocumnet(documentsWithNames);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchDocument();
+  }, []);
+  
   const handleAddClick = () => {
     navigate('/func/document/addDocument');
   };
-
-  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -175,14 +71,14 @@ const Document = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((document, index) => (
+            {documents.map((document, index) => (
               <React.Fragment key={index}>
                 <tr className="bg-gray-800 text-white border-b-2 border-white">
-                  <td className="p-2">{index + 1}</td>
-                  <td className="p-2">{document.name}</td>
-                  <td className="p-2">{document.employeeId}</td>
-                  <td className="p-2">{document.action}</td>
-                  <td className="p-2">{document.document}</td>
+                  <td className="p-2">{index + 1 || "Chưa cập nhật"}</td>
+                  <td className="p-2">{document.ho_ten || "Chưa cập nhật"}</td>
+                  <td className="p-2">{document.msnv || "Chưa cập nhật"}</td>
+                  <td className="p-2">{document.hoat_dong || "Chưa cập nhật"}</td>
+                  <td className="p-2">{document.ten_sach || "Chưa cập nhật"}</td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -197,52 +93,52 @@ const Document = () => {
                         <tbody>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Tái bản, xuất bản</td>
-                            <td className="text-gray-600 py-2">{document.reprint}</td>
+                            <td className="text-gray-600 py-2">{document.tai_ban || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tống số trang sách, tài liệu</td>
-                            <td className="text-gray-600 py-2">{document.totalPage}</td>
+                            <td className="text-gray-600 py-2">{document.tong_so_trang || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Ngôn ngữ xuất bản</td>
-                            <td className="text-gray-600 py-2">{document.language}</td>
+                            <td className="text-gray-600 py-2">{document.ngon_ngu || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Ngày xuất bản, thẩm định, nghiệm thu</td>
-                            <td className="text-gray-600 py-2">{document.dayReprint}</td>
+                            <td className="text-gray-600 py-2">{document.ngay_xuat_ban || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn hoạt động</td>
-                            <td className="text-gray-600 py-2">{document.standardTime}</td>
+                            <td className="text-gray-600 py-2">{document.gio_chuan_hoat_dong || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Vai trò</td>
-                            <td className="text-gray-600 py-2">{document.role}</td>
+                            <td className="text-gray-600 py-2">{document.vai_tro || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tổng số thành viên ban biên soạn</td>
-                            <td className="text-gray-600 py-2">{document.totalMem}</td>
+                            <td className="text-gray-600 py-2">{document.tong_so_thanh_vien || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tổng số trang phụ trách</td>
-                            <td className="text-gray-600 py-2">{document.totalPageInCharge}</td>
+                            <td className="text-gray-600 py-2">{document.tong_so_trang_phu_trach || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tỉ lệ đóng góp</td>
-                            <td className="text-gray-600 py-2">{document.contributionRate}</td>
+                            <td className="text-gray-600 py-2">{document.ty_le_dong_gop || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn quy đổi theo vai trò</td>
-                            <td className="text-gray-600 py-2">{document.timeRole}</td>
+                            <td className="text-gray-600 py-2">{document.gio_quy_doi || "Chưa cập nhật"}</td>
                           </tr>
                         </tbody>
                       </table>

@@ -1,48 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
-
-
-const data = [
-  {
-    name: 'Trần Duy Thanh',
-    employeeId: 'A29-203',
-    action: 'Biên dịch tài liệu',
-    nameSciInit: 'Công trình ABC',
-    certificationCode: '02092003',
-    day: '04/10/2024',
-    benefits: 'Có đem lại lợi ích kinh tế cho Bệnh viện',
-    benefitMoney: 1111000,
-    standardTime: 10,
-    contributeRate: 60,
-    timeRoleTemp: 2,
-  },
-  {
-    name: 'Trần Duy Thanh',
-    employeeId: 'A29-203',
-    action: 'Biên dịch tài liệu',
-    nameSciInit: 'Công trình ABC',
-    certificationCode: '02092003',
-    day: '04/10/2024',
-    benefits: 'Có đem lại lợi ích kinh tế cho Bệnh viện',
-    benefitMoney: 1111000,
-    standardTime: 10,
-    contributeRate: 60,
-    timeRoleTemp: 2,
-  },
-];
-// Additional data entries here... 
+import axios from 'axios';
 
 
 const Initiative = () => {
 
   const navigate = useNavigate();
+  const [initatives, setInitative] = useState([]);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  const fetchEmployeeName = async (msnv) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
+      return response.data.ho_ten;
+    } catch (err) {
+      console.error(err);
+      return '';
+    }
+  };
+
+  useEffect(() => {
+    const fetchInitative = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/education/getAllInit");
+      console.log(response);
+      const initativeWName = await Promise.all(response.data.map(async (init) => {
+        const employeeName = await fetchEmployeeName(init.msnv);
+        return {...init, ho_ten: employeeName};
+      }));
+      setInitative(initativeWName);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchInitative();
+  },[]);
   const handleAddClick = () => {
     navigate('/func/Initiative/addInitiative');
   };
-
-  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -73,14 +69,14 @@ const Initiative = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((initiative, index) => (
+            {initatives.map((initiative, index) => (
               <React.Fragment key={index}>
                 <tr className="bg-gray-800 text-white border-b-2 border-white">
                   <td className="p-2">{index + 1}</td>
-                  <td className="p-2">{initiative.name}</td>
-                  <td className="p-2">{initiative.employeeId}</td>
-                  <td className="p-2">{initiative.action}</td>
-                  <td className="p-2">{initiative.nameSciInit}</td>
+                  <td className="p-2">{initiative.ho_ten || "Chưa cập nhật"}</td>
+                  <td className="p-2">{initiative.msnv || "Chưa cập nhật"}</td>
+                  <td className="p-2">{initiative.hoat_dong || "Chưa cập nhật"}</td>
+                  <td className="p-2">{initiative.ten_cong_trinh || "Chưa cập nhật"}</td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -95,37 +91,37 @@ const Initiative = () => {
                         <tbody>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Mã số chứng nhận (theo quyết định công nhận)</td>
-                            <td className="text-gray-600 py-2">{initiative.certificationCode}</td>
+                            <td className="text-gray-600 py-2">{initiative.ma_so_chung_nhan || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Ngày</td>
-                            <td className="text-gray-600 py-2">{initiative.day}</td>
+                            <td className="text-gray-600 py-2">{initiative.ngay || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Lợi ích mang lại cho Bệnh viện</td>
-                            <td className="text-gray-600 py-2">{initiative.benefits}</td>
+                            <td className="text-gray-600 py-2">{initiative.loi_ich || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Số tiền lợi ích kinh tế mang lại cho Bệnh viện 
                             (đơn vị tính: trăm triệu)</td>
-                            <td className="text-gray-600 py-2">{initiative.benefitMoney}</td>
+                            <td className="text-gray-600 py-2">{initiative.so_tien_loi_ich || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn hoạt động</td>
-                            <td className="text-gray-600 py-2">{initiative.standardTime}</td>
+                            <td className="text-gray-600 py-2">{initiative.gio_chuan_hoat_dong || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tỷ lệ tham gia đóng góp (căn cứ theo hồ sơ)</td>
-                            <td className="text-gray-600 py-2">{initiative.contributeRate}</td>
+                            <td className="text-gray-600 py-2">{initiative.ty_le_dong_gop || "Chưa cập nhật"}</td>
                           </tr>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn quy đổi theo vai trò(tạm tính)</td>
-                            <td className="text-gray-600 py-2">{initiative.timeRoleTemp}</td>
+                            <td className="text-gray-600 py-2">{initiative.gio_quy_doi || "Chưa cập nhật"}</td>
                           </tr>
                         </tbody>
                       </table>

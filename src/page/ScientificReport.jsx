@@ -1,63 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
-
-
-const data = [
-  {
-    name: 'Trần Duy Thanh',
-    employeeId: 'A29-203',
-    action: 'Biên dịch tài liệu',
-    nameReported: 'Tên bài fulltext đã báo cáo',
-    nameTopicReported: 'Nghiên cứu khoa học 1',
-    proof: 'Chứng nhận báo cáo',
-    nameConference: 'Hội nghi báo cáo 1',
-    organizingUnit: 'Hội ABC',
-    day: '04/10/2024',
-    range:'Hội nghị trong nước',
-    prize: 'Không',
-    reportForm: 'Báo cáo hội trường',
-    standardTimeTempFt: 10,
-    totalMemFt: 200,
-    roleFt: 'Tác giả đầu tiên',
-    sameRoleMemFt: 2,
-    contributionRate: 11,
-    standardTimeFt: 10,
-  },
-  {
-    name: 'Tiêu Trí Quang',
-    employeeId: 'A29-204',
-    action: 'Biên dịch tài liệu',
-    nameReported: 'Tên bài fulltext đã báo cáo',
-    nameTopicReported: 'Nghiên cứu khoa học 1',
-    proof: 'Chứng nhận báo cáo',
-    nameConference: 'Hội nghi báo cáo 1',
-    organizingUnit: 'Hội ABC',
-    day: '04/10/2024',
-    range:'Hội nghị trong nước',
-    prize: 'Không',
-    reportForm: 'Báo cáo hội trường',
-    standardTimeTempFt: 10,
-    totalMemFt: 200,
-    roleFt: 'Tác giả đầu tiên',
-    sameRoleMemFt: 2,
-    contributionRate: 11,
-    standardTimeFt: 10,
-  },
-];
-// Additional data entries here...
+import axios from 'axios';
 
 
 const ScientificReport = () => {
 
   const navigate = useNavigate();
+  const [report, setReport] = useState([]);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
+  const fetchEmployeeName = async (msnv) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
+      console.log(response);
+      return response.data.ho_ten;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    const fetchReport = async() => {
+      try {
+        const response = await axios.get("http://localhost:3001/education/getAllSciRep");
+        const reportWName = await Promise.all(response.data.map(async(rep) => {
+          const employeeName = await fetchEmployeeName(rep.msnv);
+          return {...rep, ho_ten: employeeName};
+        }));
+        setReport(reportWName);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchReport();
+  },[]);
+
   const handleAddClick = () => {
     navigate('/func/scientificReport/addSciReport');
   };
-
-  const [expandedIndex, setExpandedIndex] = useState(null);
-
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
@@ -87,14 +69,14 @@ const ScientificReport = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((scientificReport, index) => (
+            {report.map((scientificReport, index) => (
               <React.Fragment key={index}>
                 <tr className="bg-gray-800 text-white border-b-2 border-white">
                   <td className="p-2">{index + 1}</td>
-                  <td className="p-2">{scientificReport.name}</td>
-                  <td className="p-2">{scientificReport.employeeId}</td>
-                  <td className="p-2">{scientificReport.action}</td>
-                  <td className="p-2">{scientificReport.nameReported}</td>
+                  <td className="p-2">{scientificReport.ho_ten}</td>
+                  <td className="p-2">{scientificReport.msnv}</td>
+                  <td className="p-2">{scientificReport.hoat_dong || "Chưa cập nhật"}</td>
+                  <td className="p-2">{scientificReport.ten_bai_fulltext || "Chưa cập nhật"}</td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -103,78 +85,78 @@ const ScientificReport = () => {
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
 
-                <td className="p-4" colSpan="5">
+                  <td className="p-4" colSpan="5">
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">
                         <tbody>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Tên đề tài đã báo cáo</td>
-                            <td className="text-gray-600 py-2">{scientificReport.nameTopicReported}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.ten_de_tai || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Minh chứng</td>
-                            <td className="text-gray-600 py-2">{scientificReport.proof}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.minh_chung || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tên hội nghị khoa học đã báo cáo</td>
-                            <td className="text-gray-600 py-2">{scientificReport.nameConference}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.ten_hoi_nghi || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Đơn vị tổ chức</td>
-                            <td className="text-gray-600 py-2">{scientificReport.organizingUnit}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.don_vi_to_chuc || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Ngày</td>
-                            <td className="text-gray-600 py-2">{scientificReport.day}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.ngay || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Phạm vi</td>
-                            <td className="text-gray-600 py-2">{scientificReport.range}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.pham_vi || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giải thưởng đạt được(nếu có)</td>
-                            <td className="text-gray-600 py-2">{scientificReport.prize}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.giai_thuong || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Hình thức báo cáo</td>
-                            <td className="text-gray-600 py-2">{scientificReport.reportForm}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.hinh_thuc || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn quy đổi theo vai trò(tạm tính)</td>
-                            <td className="text-gray-600 py-2">{scientificReport.standardTimeTempFt}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.gio_quy_doi || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tống số tác giả bài fulltext</td>
-                            <td className="text-gray-600 py-2">{scientificReport.totalMemFt}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.tong_so_tac_gia || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Vai trò trong bài fulltext</td>
-                            <td className="text-gray-600 py-2">{scientificReport.roleFt}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.vai_tro || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tổng số tác giả cùng vai trò</td>
-                            <td className="text-gray-600 py-2">{scientificReport.sameRoleMemFt}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.tong_so_tac_gia_vai_tro || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tỷ lệ đóng góp</td>
-                            <td className="text-gray-600 py-2">{scientificReport.contributionRate}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.ty_le_dong_gop || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn quy đổi theo vai trò</td>
-                            <td className="text-gray-600 py-2">{scientificReport.standardTimeFt}</td>
+                            <td className="text-gray-600 py-2">{scientificReport.gio_quy_doi_vai_tro || "Chưa cập nhật"}</td>
                           </tr>
                         </tbody>
                       </table>

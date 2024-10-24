@@ -1,46 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
-
-
-const data = [
-    {
-        name: 'Trần Duy Thanh',
-        employeeId: 'A29-203',
-        action: 'Biên dịch tài liệu',
-        nameSciCfs: 'Tên bài fulltext đã báo cáo',
-        organizingUnit: 'Y HN',
-        day: '04/10/2024',
-        range: 'Hội nghị trong nước',
-        durationAttend: 3,
-        standardTime: 10,
-        timeRoleTemp: 2,
-    },
-    {
-        name: 'Trần Duy Thanh',
-        employeeId: 'A29-203',
-        action: 'Biên dịch tài liệu',
-        nameSciCfs: 'Tên bài fulltext đã báo cáo',
-        organizingUnit: 'Y TPHCM',
-        day: '04/10/2024',
-        range: 'Hội nghị trong nước',
-        durationAttend: 3,
-        standardTime: 10,
-        timeRoleTemp: 2,
-    },
-];
-// Additional data entries here...
+import axios from 'axios';
 
 
 const ScientificConferences = () => {
 
     const navigate = useNavigate();
+    const [conferences, setConferences] = useState([]);
+    const [expandedIndex, setExpandedIndex] = useState(null);
     const handleAddClick = () => {
         navigate('/func/scientificConferences/addScientificCfs');
     };
 
-    const [expandedIndex, setExpandedIndex] = useState(null);
+    const fetchEmployeeName = async (msnv) => {
+        try {
+            const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
+            return response.data.ho_ten;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    useEffect(() => {
+        const fetchConferences = async () => {
+            try {
+                const response = await axios.get("http://localhost:3001/education/getAllSciConf");
+                const conferencesWName = await Promise.all(response.data.map(async (conf) => {
+                    const employeeName = await fetchEmployeeName(conf.msnv);
+                    return { ...conf, ho_ten: employeeName };
+                }));
+                setConferences(conferencesWName);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchConferences();
+    },[]);
 
     const toggleExpand = (index) => {
         setExpandedIndex(expandedIndex === index ? null : index);
@@ -71,14 +68,14 @@ const ScientificConferences = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((scientificCfs, index) => (
+                        {conferences.map((scientificCfs, index) => (
                             <React.Fragment key={index}>
                                 <tr className="bg-gray-800 text-white border-b-2 border-white">
                                     <td className="p-2">{index + 1}</td>
-                                    <td className="p-2">{scientificCfs.name}</td>
-                                    <td className="p-2">{scientificCfs.employeeId}</td>
-                                    <td className="p-2">{scientificCfs.action}</td>
-                                    <td className="p-2">{scientificCfs.nameSciCfs}</td>
+                                    <td className="p-2">{scientificCfs.ho_ten}</td>
+                                    <td className="p-2">{scientificCfs.msnv}</td>
+                                    <td className="p-2">{scientificCfs.hoat_dong}</td>
+                                    <td className="p-2">{scientificCfs.ten_hoi_nghi}</td>
                                     <td className="p-2">
                                         <button onClick={() => toggleExpand(index)}>
                                             {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -93,32 +90,32 @@ const ScientificConferences = () => {
                                                 <tbody>
                                                     <tr className="py-2">
                                                         <td className="font-semibold text-gray-700 w-1/2 py-2">Đơn vị tổ chức</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.organizingUnit}</td>
+                                                        <td className="text-gray-600 py-2">{scientificCfs.don_vi_to_chuc}</td>
                                                     </tr>
 
                                                     <tr className="py-2">
                                                         <td className="font-semibold text-gray-700 py-2">Ngày</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.day}</td>
+                                                        <td className="text-gray-600 py-2">{scientificCfs.ngay}</td>
                                                     </tr>
 
                                                     <tr className="py-2">
                                                         <td className="font-semibold text-gray-700 py-2">Phạm vi</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.range}</td>
+                                                        <td className="text-gray-600 py-2">{scientificCfs.pham_vi}</td>
                                                     </tr>
 
                                                     <tr className="py-2">
                                                         <td className="font-semibold text-gray-700 py-2">Thời lượng tham dự (đơn vị tính: buổi)</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.durationAttend}</td>
+                                                        <td className="text-gray-600 py-2">{scientificCfs.thoi_luong}</td>
                                                     </tr>
 
                                                     <tr className="py-2">
                                                         <td className="font-semibold text-gray-700 py-2">Giờ chuẩn hoạt động</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.standardTime}</td>
+                                                        <td className="text-gray-600 py-2">{scientificCfs.gio_chuan_hoat_dong}</td>
                                                     </tr>
 
                                                     <tr className="py-2">
                                                         <td className="font-semibold text-gray-700 py-2">Giờ chuẩn quy đổi theo vai trò(tạm tính)</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.timeRoleTemp}</td>
+                                                        <td className="text-gray-600 py-2">{scientificCfs.gio_quy_doi}</td>
                                                     </tr>
 
                                                 </tbody>

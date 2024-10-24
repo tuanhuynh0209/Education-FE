@@ -1,60 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
-
-
-const data = [
-  {
-    name: 'Huỳnh Vũ Anh Tuấn',
-    employeeId: 'A29-205',
-    action: 'Kỷ yếu hội thảo trong nước có phản biện và xuất bản bằng tiếng Việt',
-    artTitle: 'Kỷ yếu tiên tiến',
-    doi: 292003,
-    day: "02/10/2024",
-    magazineName: 'Jama',
-    imprint: 'Thanh Niên',
-    language: 'Tiếng việt',
-    rangge: 'Có chỉ số ảnh hưởng IF > 0.5 (tính theo năm kê khai)',
-    impactFactor: 3,
-    standardTime: 120,
-    role: 'Đồng tác giả',
-    totalMember: 7,
-    totalAuthor: 7,
-    contributionRate: 15,
-    timeRole: 72
-  },
-  {
-    name: 'Huỳnh Vũ Anh Tuấn',
-    employeeId: 'A29-205',
-    action: 'Kỷ yếu hội thảo trong nước có phản biện và xuất bản bằng tiếng Việt',
-    artTitle: 'Kỷ yếu tiên tiến',
-    doi: 292003,
-    day: "02/10/2024",
-    magazineName: 'Jama',
-    imprint: 'Thanh Niên',
-    language: 'Tiếng việt',
-    rangge: 'Có chỉ số ảnh hưởng IF > 0.5 (tính theo năm kê khai)',
-    impactFactor: 3,
-    standardTime: 120,
-    role: 'Đồng tác giả',
-    totalMember: 7,
-    totalAuthor: 7,
-    contributionRate: 15,
-    timeRole: 72
-  }
-];
-// Additional data entries here...
+import axios from 'axios';
 
 
 const ScientificArticle = () => {
 
   const navigate = useNavigate();
+  const [article, setArticle] = useState([]);
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  const fetchEmployeeName = async (msnv) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
+      return response.data.ho_ten;
+    } catch (err) {
+      console.error(err);
+      return '';
+    }
+  };
+
+  useEffect(() => {
+    const fechArticle = async() => {
+      try {
+        const response = await axios.get("http://localhost:3001/education/getAllSciArt");
+        console.log(response);
+        const articleWName = await Promise.all(response.data.map(async (article) => {
+          const employeeName = await fetchEmployeeName(article.msnv);
+          return {...article, ho_ten: employeeName};
+        }));
+        setArticle(articleWName);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fechArticle();
+  },[]);
+  
   const handleAddClick = () => {
     navigate('/func/scientificArticle/addSciArt');
   };
-
-  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -83,14 +68,14 @@ const ScientificArticle = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((scientificArt, index) => (
+            {article.map((scientificArt, index) => (
               <React.Fragment key={index}>
                 <tr className="bg-gray-800 text-white border-b-2 border-white">
                   <td className="p-2">{index + 1}</td>
-                  <td className="p-2">{scientificArt.name}</td>
-                  <td className="p-2">{scientificArt.employeeId}</td>
-                  <td className="p-2">{scientificArt.action}</td>
-                  <td className="p-2">{scientificArt.artTitle}</td>
+                  <td className="p-2">{scientificArt.ho_ten}</td>
+                  <td className="p-2">{scientificArt.msnv}</td>
+                  <td className="p-2">{scientificArt.hoat_dong}</td>
+                  <td className="p-2">{scientificArt.ten_bai_bao}</td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -110,62 +95,62 @@ const ScientificArticle = () => {
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Ngày</td>
-                            <td className="text-gray-600 py-2">{scientificArt.day}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.ngay}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tên tạp chí, kỷ yếu</td>
-                            <td className="text-gray-600 py-2">{scientificArt.magazineName}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.ten_tap_chi}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tên nhà xuất bản, đơn vị chủ quản</td>
-                            <td className="text-gray-600 py-2">{scientificArt.imprint}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.ten_nha_xuat_ban}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Ngôn ngữ xuất bản</td>
-                            <td className="text-gray-600 py-2">{scientificArt.language}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.ngon_ngu}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Phạm vi, cấp độ </td>
-                            <td className="text-gray-600 py-2">{scientificArt.rangge}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.pham_vi_cap_do}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Chỉ số Impact Factor(IF) nếu có</td>
-                            <td className="text-gray-600 py-2">{scientificArt.impactFactor}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.impact_factor}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ chuẩn của hoạt động</td>
-                            <td className="text-gray-600 py-2">{scientificArt.standardTime}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.gio_chuan_hoat_dong}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Vai trò</td>
-                            <td className="text-gray-600 py-2">{scientificArt.role}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.vai_tro}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tổng số thành viên cùng vai trò</td>
-                            <td className="text-gray-600 py-2">{scientificArt.totalMember}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.tong_so_thanh_vien}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tống số tác giả</td>
-                            <td className="text-gray-600 py-2">{scientificArt.totalAuthor}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.tong_so_tac_gia}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Tỷ lệ đóng góp</td>
-                            <td className="text-gray-600 py-2">{scientificArt.contributionRate}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.ty_le_dong_gop}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Giờ quy đổi theo vai trò</td>
-                            <td className="text-gray-600 py-2">{scientificArt.timeRole}</td>
+                            <td className="text-gray-600 py-2">{scientificArt.gio_quy_doi}</td>
                           </tr>
                         </tbody>
                       </table>
