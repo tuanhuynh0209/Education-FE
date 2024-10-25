@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
 
 const ScientificArticle = () => {
 
   const navigate = useNavigate();
-  const [article, setArticle] = useState([]);
+  const [articles, setArticle] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
   const fetchEmployeeName = async (msnv) => {
     try {
@@ -21,13 +23,12 @@ const ScientificArticle = () => {
   };
 
   useEffect(() => {
-    const fechArticle = async() => {
+    const fechArticle = async () => {
       try {
         const response = await axios.get("http://localhost:3001/education/getAllSciArt");
-        console.log(response);
         const articleWName = await Promise.all(response.data.map(async (article) => {
           const employeeName = await fetchEmployeeName(article.msnv);
-          return {...article, ho_ten: employeeName};
+          return { ...article, ho_ten: employeeName };
         }));
         setArticle(articleWName);
       } catch (err) {
@@ -35,8 +36,22 @@ const ScientificArticle = () => {
       }
     };
     fechArticle();
-  },[]);
-  
+  }, []);
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Bạn chắc chắn muốn bài báo khoa học này?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/education/deleteUsers/${id}`);
+        setArticle(articles.filter(article => article.ma_bai_bao !== id));
+        alert("Xóa bài báo khoa học thành công");
+      } catch (err) {
+        console.error(err);
+        alert("Không thể xóa bài báo khoa học");
+      }
+    }
+  };
+
   const handleAddClick = () => {
     navigate('/func/scientificArticle/addSciArt');
   };
@@ -64,11 +79,13 @@ const ScientificArticle = () => {
               <th className="p-2">Mã số nhân viên</th>
               <th className="p-2">Hoạt động</th>
               <th className="p-2">Tên bài báo khoa học</th>
-              <th className="p-2"></th>
+              <th className="p-2">Chỉnh sửa</th>
+              <th className="p-2">Xóa</th>
+              <th className="p-2">Mở rộng</th>
             </tr>
           </thead>
           <tbody>
-            {article.map((scientificArt, index) => (
+            {articles.map((scientificArt, index) => (
               <React.Fragment key={index}>
                 <tr className="bg-gray-800 text-white border-b-2 border-white">
                   <td className="p-2">{index + 1}</td>
@@ -76,6 +93,17 @@ const ScientificArticle = () => {
                   <td className="p-2">{scientificArt.msnv}</td>
                   <td className="p-2">{scientificArt.hoat_dong}</td>
                   <td className="p-2">{scientificArt.ten_bai_bao}</td>
+                  <td>
+                    {/* nút chỉnh sửa này đang sài cho user */}
+                    <button onClick={handleAddClick} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                      <ModeEditOutlineOutlinedIcon className='text-white' />
+                    </button>
+                  </td>
+                  <td className="p-2">
+                    <button onClick={() => handleDelete(scientificArt.ma_bai_bao)} className="bg-red-600 text-white p-2 rounded">
+                      <DeleteIcon />
+                    </button>
+                  </td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -84,7 +112,7 @@ const ScientificArticle = () => {
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
 
-                  <td className="p-4" colSpan="5">
+                  <td className="p-4" colSpan="7">
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">
                         <tbody>

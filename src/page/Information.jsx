@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
 const Information = () => {
@@ -9,20 +10,31 @@ const Information = () => {
   const [users, setUsers] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
 
-  // Fetch users from the API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get('http://localhost:3001/education/users');
-        console.log(response);
         setUsers(response.data);
       } catch (err) {
         console.error(err);
       }
     };
-    
     fetchUsers();
   }, []);
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Bạn chắc chắn muốn xóa người dùng này?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/education/deleteUsers/${id}`);
+        setUsers(users.filter(user => user.msnv !== id));
+        alert("User deleted successfully");
+      } catch (err) {
+        console.error(err);
+        alert("Không thể xóa người dùng vì liên kết khóa ngoại ở các bảng khác");
+      }
+    }
+  };
 
   const handleEditClick = () => {
     navigate('/func/information/editInf');
@@ -34,12 +46,11 @@ const Information = () => {
 
   return (
     <div className='mx-8 bg-orange-400 w-full'>
-      <div className='bg-slate-400 w-full relative flex items-center justify-center p-2'>
-        <span className='text-3xl font-semibold text-white'>THÔNG TIN VIÊN CHỨC</span>
-        <button
-          onClick={handleEditClick}
-          className='absolute right-4 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm'
-        >
+      <div className='bg-slate-400 w-full relative p-2'>
+        <span className='text-3xl font-semibold text-white block text-center break-words pr-20'>
+          THÔNG TIN VIÊN CHỨC
+        </span>
+        <button onClick={handleEditClick} className='absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
           <span>Chỉnh sửa</span>
           <ModeEditOutlineOutlinedIcon className='text-white' />
         </button>
@@ -53,7 +64,9 @@ const Information = () => {
               <th className="p-2">Mã số nhân viên</th>
               <th className="p-2">Cơ sở</th>
               <th className="p-2">Đơn vị</th>
-              <th className="p-2"></th>
+              <th className="p-2">Chỉnh sửa</th>
+              <th className="p-2">Xóa</th>
+              <th className="p-2">Mở rộng</th>
             </tr>
           </thead>
           <tbody>
@@ -65,6 +78,18 @@ const Information = () => {
                   <td className="p-2">{user.msnv}</td>
                   <td className="p-2">{user.co_so || "Chưa cập nhật"}</td>
                   <td className="p-2">{user.don_vi || "Chưa cập nhật"}</td>
+                  <td>
+                    {/* nút chỉnh sửa này đang sài cho user */}
+                    <button onClick={handleEditClick} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                      {/* <span>Chỉnh sửa</span> */}
+                      <ModeEditOutlineOutlinedIcon className='text-white' />
+                    </button>
+                  </td>
+                  <td className="p-2">
+                    <button onClick={() => handleDelete(user.msnv)} className="bg-red-600 text-white p-2 rounded">
+                      <DeleteIcon />
+                    </button>
+                  </td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -72,43 +97,43 @@ const Information = () => {
                   </td>
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
-                  <td className="p-4" colSpan="5">
+                  <td className="p-4" colSpan="7">
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">
                         <tbody>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Chức danh, trình độ</td>
-                            <td className="text-gray-600 py-2">{user.jobTitle || "Chưa cập nhật"}</td>
+                            <td className="text-gray-600 py-2">{user.chuc_danh_trinh_do || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Viên chức hữu cơ</td>
-                            <td className="text-gray-600 py-2">{users.type || "Chưa cập nhật"}</td>
+                            <td className="font-semibold text-gray-700 py-2">Viên chức cơ hữu</td>
+                            <td className="text-gray-600 py-2">{user.vien_chuc_co_huu || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Số giờ nghiên cứu khoa học định mức trong năm</td>
-                            <td className="text-gray-600 py-2">{users.researchHours || "Chưa cập nhật"}</td>
+                            <td className="text-gray-600 py-2">{user.so_gio_nckh_dinh_muc || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Trường hợp giảm định mức</td>
-                            <td className="text-gray-600 py-2">{users.reducedCase || "Chưa cập nhật"}</td>
+                            <td className="text-gray-600 py-2">{user.truong_hop_giam_dinh_muc || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Số ngày</td>
-                            <td className="text-gray-600 py-2">{users.days || "Chưa cập nhật"}</td>
+                            <td className="font-semibold text-gray-700 py-2">Số ngày nếu thuộc trường hợp 3(Không phải trường hợp 3 bỏ trống)</td>
+                            <td className="text-gray-600 py-2">{user.ngay_neu_thuoc_case3 || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Định mức giờ NCKH</td>
-                            <td className="text-gray-600 py-2">{users.researchQuota || "Chưa cập nhật"}</td>
+                            <td className="text-gray-600 py-2">{user.dinh_muc_gio_nckh || "Chưa cập nhật"}</td>
                           </tr>
 
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 py-2">Ghi chú</td>
-                            <td className="text-gray-600 py-2">{users.notes || "Chưa cập nhật"}</td>
+                            <td className="text-gray-600 py-2">{user.ghi_chu || "Chưa cập nhật"}</td>
                           </tr>
                         </tbody>
                       </table>

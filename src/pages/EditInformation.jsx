@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const EditInformation = () => {
   const units = [
@@ -66,7 +66,6 @@ const EditInformation = () => {
     { value: "Phòng Tổ chức Cán bộ", label: "Phòng Tổ chức Cán bộ" },
     { value: "Phòng Vật tư thiết bị", label: "Phòng Vật tư thiết bị" },
     { value: "Trung tâm Truyền thông", label: "Trung tâm Truyền thông" }
-    
   ];
 
   const [formData, setFormData] = useState({
@@ -89,7 +88,21 @@ const EditInformation = () => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
+  useEffect(() => {
+    const fetchOldData = async () => {
+      const userId = localStorage.getItem('userId');
+      try {
+        const response = await axios.get(`http://localhost:3001/education/users/${userId}`);
+        setFormData(response.data); // Điền dữ liệu cũ vào form
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
+    fetchOldData();
+  }, []);
+
+  // nút edit của user
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userId = localStorage.getItem('userId'); // Lấy userId từ storage
@@ -108,7 +121,7 @@ const EditInformation = () => {
     <div className='mx-8 w-full'>
       <div className='w-full'>
         <span className='text-3xl font-bold'>Thêm thông tin cá nhân</span>
-        <hr className='my-4 border-gray-300'/>
+        <hr className='my-4 border-gray-300' />
       </div>
       <form onSubmit={handleSubmit} className='w-full h-full p-10 bg-white shadow-lg rounded-lg'>
         <div className="flex flex-col gap-6">
