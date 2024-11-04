@@ -14,37 +14,38 @@ const AddScientificReport = () => {
 
     const calculateStandardTimeTempFt = useCallback(() => {
         let numScope = 0;
-        if (scope === "rangeIn") {
+        if (scope === "Hội nghị trong nước") {
             numScope = 1;
-        } else if (scope === "rangeOut") {
+        } else if (scope === "Hội nghị Quốc Tế") {
             numScope = 2;
         } else numScope = 1;
         let numPrize = 0;
         switch (prize) {
-            case "noRpt1":
+            case "Giải nhất":
                 numPrize = 2;
                 break;
-            case "noRpt2":
+            case "Giải nhì":
                 numPrize = 1.5;
                 break;
-            case "noRpt3":
+            case "Giải ba":
                 numPrize = 1.25;
                 break;
             default:
                 numPrize = 1;
         }
+
         let numReportForm = 0;
-        if (reportForm === "reportOral") {
+        if (reportForm === "Báo cáo hội trường(Oral)") {
             numReportForm = 2;
         } else {
             numReportForm = 1;
         }
         let numStandardTimeTempFt = 0;
         let numActivity = 0;
-        if (activity === "actionRpt1") {
+        if (activity === "Báo cáo hội nghị khoa học chuyên ngành được hội nghề nghiệp công nhận, chấp nhận") {
             numActivity = 30;
             numStandardTimeTempFt = numActivity * numScope * numPrize * numReportForm;
-        } else if (activity === "actionRpt2") {
+        } else if (activity === "Báo cáo hội thảo, sinh hoạt chuyên môn") {
             numActivity = numStandardTimeTempFt = 40;
         }
         setStandardTimeTempFt(numStandardTimeTempFt);
@@ -55,13 +56,13 @@ const AddScientificReport = () => {
         const numSameRoleMemFt = parseFloat(sameRoleMemFt);
         let numRoleFt = 0;
         switch (roleFt) {
-            case "firstAuthor":
+            case "Tác giả đầu tiên":
                 numRoleFt = 0.2;
                 break;
-            case "authorContract":
+            case "Tác giả liên hệ":
                 numRoleFt = 0.2;
                 break;
-            case "authorMix":
+            case "Tác giả đầu tiên, tác giả liên hệ":
                 numRoleFt = 0.4;
                 break;
             default:
@@ -107,8 +108,8 @@ const AddScientificReport = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setActivity(e.target.value); calculateStandardTimeTempFt(); }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="actionRpt1">Báo cáo hội nghị khoa học chuyên ngành được hội nghề nghiệp công nhận, chấp nhận</option>
-                            <option value="actionRpt2">Báo cáo hội thảo, sinh hoạt chuyên môn</option>
+                            <option value="Báo cáo hội nghị khoa học chuyên ngành được hội nghề nghiệp công nhận, chấp nhận">Báo cáo hội nghị khoa học chuyên ngành được hội nghề nghiệp công nhận, chấp nhận</option>
+                            <option value="Báo cáo hội thảo, sinh hoạt chuyên môn">Báo cáo hội thảo, sinh hoạt chuyên môn</option>
                         </select>
                     </div>
 
@@ -160,8 +161,8 @@ const AddScientificReport = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setScope(e.target.value); calculateStandardTimeTempFt(); }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="rangeIn">Hội nghị trong nước</option>
-                            <option value="rangeOut">Hội nghị Quốc tế</option>
+                            <option value="Hội nghị trong nước">Hội nghị trong nước</option>
+                            <option value="Hội nghị Quốc tế">Hội nghị Quốc tế</option>
                         </select>
                     </div>
 
@@ -171,10 +172,10 @@ const AddScientificReport = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setPrize(e.target.value); calculateStandardTimeTempFt(); }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="noRpt1">Giải nhất</option>
-                            <option value="noRpt2">Giải nhì</option>
-                            <option value="noRpt3">Giải ba</option>
-                            <option value="noRpt">Không</option>
+                            <option value="Giải nhất">Giải nhất</option>
+                            <option value="Giải nhì">Giải nhì</option>
+                            <option value="Giải ba">Giải ba</option>
+                            <option value="Không">Không</option>
                         </select>
                     </div>
 
@@ -184,9 +185,9 @@ const AddScientificReport = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setReportForm(e.target.value); calculateStandardTimeTempFt(); }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="reportOral">Báo cóa hội trường(Oral)</option>
-                            <option value="reportPoster">Báo cáo dạng treo tường(Poster)</option>
-                            <option value="reportNomal">Báo cáo hội thảo, sinh hoạt chuyên môn</option>
+                            <option value="Báo cáo hội trường(Oral)">Báo cáo hội trường(Oral)</option>
+                            <option value="Báo cáo dạng treo tường(Poster)">Báo cáo dạng treo tường(Poster)</option>
+                            <option value="Báo cáo hội thảo, sinh hoạt chuyên môn">Báo cáo hội thảo, sinh hoạt chuyên môn</option>
                         </select>
                     </div>
 
@@ -214,10 +215,10 @@ const AddScientificReport = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setRoleFt(e.target.value); calculateContributionPercentage(); }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="firstAuthor">Tác giả đầu tiên</option>
-                            <option value="authorContract">Tác giả liên hệ</option>
-                            <option value="authorMix">Tác giả đầu tiên, tác giả liên hệ</option>
-                            <option value="coAuthor">Đồng tác giả</option>
+                            <option value="Tác giả đầu tiên">Tác giả đầu tiên</option>
+                            <option value="Tác giả liên hệ">Tác giả liên hệ</option>
+                            <option value="Tác giả đầu tiên, tác giả liên hệ">Tác giả đầu tiên, tác giả liên hệ</option>
+                            <option value="Đồng tác giả">Đồng tác giả</option>
                         </select>
                     </div>
 

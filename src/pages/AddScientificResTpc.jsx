@@ -12,16 +12,16 @@ const AddScientificResTpc = () => {
     const calculateStandardHours = useCallback(() => {
         let numActivity = 0;
         switch (activity) {
-            case "actionResTpc1":
+            case "Đề tài NCKH đã được nghiệm thu":
                 numActivity = 600;
                 break;
-            case "actionResTpc2":
+            case "Đề tài NCKH đã được phê duyệt":
                 numActivity = 300;
                 break;
-            case "actionResTpc3":
+            case "Đề cương NCKH đã tham gia đấu thầu hoặc xét tuyển nhưng không được duyệt":
                 numActivity = 150;
                 break;
-            case "actionResTpc4":
+            case "Phiếu đề xuất ý tưởng NCKH đã tham gia xét tuyển đối với các chương trình NCKH và CN nhưng không được phê duyệt":
                 numActivity = 50;
                 break;
             default:
@@ -29,19 +29,19 @@ const AddScientificResTpc = () => {
         }
         let numScope = 0;
         switch (scope) {
-            case "rangeSciResTpc1":
+            case "Cấp nhà nước hoặc có giá trị &gt; 1 tỉ đồng":
                 numScope = 1;
                 break;
-            case "rangeSciResTpc2":
+            case "Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị &gt; 500 triệu đồng":
                 numScope = 0.8;
                 break;
-            case "rangeSciResTpc3":
+            case "Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị 200 - 500 triệu đồng":
                 numScope = 0.6;
                 break;
-            case "rangeSciResTpc4":
+            case "Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị từ 100 đến &lt; 200 triệu đồng":
                 numScope = 0.4;
                 break;
-            case "rangeSciResTpc5":
+            case "Cấp cơ sở hoặc có giá trị &lt; 100 triệu đồng":
                 numScope = 0.2;
                 break;
             default:
@@ -54,18 +54,17 @@ const AddScientificResTpc = () => {
 
     const calculateContributionPercentage = useCallback(() => {
         let numcontributionFromRole = 0;
-
         switch (role) {
-            case "roleSciResTpc1":
+            case "Chủ nhiệm và đồng chủ nhiệm: 50%":
                 numcontributionFromRole = 50;
                 break;
-            case "roleSciResTpc2":
+            case "Các thành viên chính và thư ký: 30%":
                 numcontributionFromRole = 30;
                 break;
-            case "roleSciResTpc3":
+            case "Thành viên: 15% (cho nhóm)":
                 numcontributionFromRole = 15;
                 break;
-            case "roleSciResTpc4":
+            case "KTV và thành phần khác: 5% (cho nhóm)":
                 numcontributionFromRole = 5;
                 break;
             default:
@@ -112,10 +111,10 @@ const AddScientificResTpc = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setActivity(e.target.value); calculateStandardHours(); }} >
                             <option value="">Ấn vào để chọn</option>
-                            <option value="actionResTpc1">Đề tài NCKH đã được nghiệm thu</option>
-                            <option value="actionResTpc2">Đề tài NCKH đã được phê duyệt</option>
-                            <option value="actionResTpc3">Đề cương NCKH đã tham gia đấu thầu hoặc xét tuyển nhưng không được duyệt</option>
-                            <option value="actionResTpc4">Phiếu đề xuất ý tưởng NCKH đã tham gia xét tuyển đối với các chương trình NCKH và CN nhưng không được phê duyệt</option>
+                            <option value="Đề tài NCKH đã được nghiệm thu">Đề tài NCKH đã được nghiệm thu</option>
+                            <option value="Đề tài NCKH đã được phê duyệt">Đề tài NCKH đã được phê duyệt</option>
+                            <option value="Đề cương NCKH đã tham gia đấu thầu hoặc xét tuyển nhưng không được duyệt">Đề cương NCKH đã tham gia đấu thầu hoặc xét tuyển nhưng không được duyệt</option>
+                            <option value="Phiếu đề xuất ý tưởng NCKH đã tham gia xét tuyển đối với các chương trình NCKH và CN nhưng không được phê duyệt">Phiếu đề xuất ý tưởng NCKH đã tham gia xét tuyển đối với các chương trình NCKH và CN nhưng không được phê duyệt</option>
                         </select>
                     </div>
 
@@ -126,11 +125,11 @@ const AddScientificResTpc = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setScope(e.target.value); calculateStandardHours(); }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="rangeSciResTpc1">Cấp nhà nước hoặc có giá trị &gt; 1 tỉ đồng</option>
-                            <option value="rangeSciResTpc2">Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị &gt; 500 triệu đồng</option>
-                            <option value="rangeSciResTpc3">Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị 200 - 500 triệu đồng</option>
-                            <option value="rangeSciResTpc4">Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị từ 100 đến &lt; 200 triệu đồng</option>
-                            <option value="rangeSciResTpc5">Cấp cơ sở hoặc có giá trị &lt; 100 triệu đồng</option>
+                            <option value="Cấp nhà nước hoặc có giá trị &gt; 1 tỉ đồng">Cấp nhà nước hoặc có giá trị &gt; 1 tỉ đồng</option>
+                            <option value="Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị &gt; 500 triệu đồng">Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị &gt; 500 triệu đồng</option>
+                            <option value="Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị 200 - 500 triệu đồng">Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị 200 - 500 triệu đồng</option>
+                            <option value="Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị từ 100 đến &lt; 200 triệu đồng">Cấp bộ-tỉnh/thành phố-nhánh cấp nhà nước hoặc có giá trị từ 100 đến &lt; 200 triệu đồng</option>
+                            <option value="Cấp cơ sở hoặc có giá trị &lt; 100 triệu đồng">Cấp cơ sở hoặc có giá trị &lt; 100 triệu đồng</option>
                         </select>
 
                     </div>
@@ -174,10 +173,10 @@ const AddScientificResTpc = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setRole(e.target.value); calculateContributionPercentage(); }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="roleSciResTpc1">Chủ nhiệm và đồng chủ nhiệm: 50%</option>
-                            <option value="roleSciResTpc2">Các thành viên chính và thư ký: 30%</option>
-                            <option value="roleSciResTpc3">Thành viên: 15% (cho nhóm)</option>
-                            <option value="roleSciResTpc4">KTV và thành phần khác: 5% (cho nhóm)</option>
+                            <option value="Chủ nhiệm và đồng chủ nhiệm: 50%">Chủ nhiệm và đồng chủ nhiệm: 50%</option>
+                            <option value="Các thành viên chính và thư ký: 30%">Các thành viên chính và thư ký: 30%</option>
+                            <option value="Thành viên: 15% (cho nhóm)">Thành viên: 15% (cho nhóm)</option>
+                            <option value="KTV và thành phần khác: 5% (cho nhóm)">KTV và thành phần khác: 5% (cho nhóm)</option>
                         </select>
                     </div>
 

@@ -69,8 +69,8 @@ const AddScientificCfs = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300">
                             <option value="">Ấn vào để chọn</option>
-                            <option value="rangeIn">Hội nghị trong nước</option>
-                            <option value="rangeOut">Hội nghị Quốc tế</option>
+                            <option value="Hội nghị trong nước">Hội nghị trong nước</option>
+                            <option value="Hội nghị Quốc tế">Hội nghị Quốc tế</option>
                         </select>
                     </div>
 

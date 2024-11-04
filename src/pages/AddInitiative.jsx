@@ -61,8 +61,8 @@ const AddInitiative = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300">
                             <option value="">Ấn vào để chọn</option>
-                            <option value="rangeIn">Không đem lại lợi ích kinh tế cho Bệnh viện</option>
-                            <option value="rangeOut">Có đem lại lợi ích kinh tế cho Bệnh viện</option> 
+                            <option value="Không đem lại lợi ích kinh tế cho Bệnh viện">Không đem lại lợi ích kinh tế cho Bệnh viện</option>
+                            <option value="Có đem lại lợi ích kinh tế cho Bệnh viện">Có đem lại lợi ích kinh tế cho Bệnh viện</option> 
                         </select>
                     </div>
 

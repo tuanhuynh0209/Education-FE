@@ -11,25 +11,25 @@ const AddScientificResPro = () => {
     const calculateStandardHours = useCallback(() => {
         let hours = 0;
         switch (activity) {
-            case "actionSciCfs1":
+            case "Giấy chứng nhận sáng chế độc quyền (patent)":
                 hours = 200;
                 break;
-            case "actionSciCfs2":
+            case "Giấy chứng nhận giải pháp hữu ích":
                 hours = 160;
                 break;
-            case "actionSciCfs3":
+            case "Giấy chứng nhận đăng ký nhãn hiệu sản phẩm phát triển từ đề tài NCKH":
                 hours = 100;
                 break;
-            case "actionSciCfs4":
+            case "Giấy chứng nhận giải pháp hữu ích":
                 hours = 20;
                 break;
             default:
                 hours = 0;
         }
         let numScope = 0;
-        if (scope === "rangeIn") {
+        if (scope === "Trong nước") {
             numScope = 1;
-        } else if (scope === "rangeOut") {
+        } else if (scope === "Quốc tế") {
             numScope = 2;
         }
         const numStandandHours = hours * numScope
@@ -77,10 +77,10 @@ const AddScientificResPro = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setActivity(e.target.value); calculateStandardHours() }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="actionSciCfs1">Giấy chứng nhận sáng chế độc quyền (patent)</option>
-                            <option value="actionSciCfs2">Giấy chứng nhận giải pháp hữu ích</option>
-                            <option value="actionSciCfs3">Giấy chứng nhận đăng ký nhãn hiệu sản phẩm phát triển từ đề tài NCKH</option>
-                            <option value="actionSciCfs4">Giấy chứng nhận giải pháp hữu ích</option>
+                            <option value="Giấy chứng nhận sáng chế độc quyền (patent)">Giấy chứng nhận sáng chế độc quyền (patent)</option>
+                            <option value="Giấy chứng nhận giải pháp hữu ích">Giấy chứng nhận giải pháp hữu ích</option>
+                            <option value="Giấy chứng nhận đăng ký nhãn hiệu sản phẩm phát triển từ đề tài NCKH">Giấy chứng nhận đăng ký nhãn hiệu sản phẩm phát triển từ đề tài NCKH</option>
+                            <option value="Giấy chứng nhận giải pháp hữu ích">Giấy chứng nhận giải pháp hữu ích</option>
                         </select>
                     </div>
 
@@ -111,8 +111,8 @@ const AddScientificResPro = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setScope(e.target.value); calculateStandardHours() }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="rangeIn">Trong nước</option>
-                            <option value="rangeOut">Quốc tế</option>
+                            <option value="Trong nước">Trong nước</option>
+                            <option value="Quốc tế">Quốc tế</option>
                         </select>
                     </div>
 

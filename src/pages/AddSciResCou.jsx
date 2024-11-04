@@ -7,16 +7,16 @@ const AddSciResCou = () => {
     const calculateStandardTimeConversionRole = useCallback(() => {
         let num = 0;
         switch (role) {
-            case "roleSciResCou1":
+            case "1. Chủ tịch Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở":
                 num = 4;
                 break;
-            case "roleSciResCou2":
+            case "2. Ủy viên thư ký Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở":
                 num = 3;
                 break;
-            case "roleSciResCou3":
+            case "3. Ủy viên Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở":
                 num = 3;
                 break;
-            case "roleSciResCou4":
+            case "4. Thành viên Hội đồng đánh giá đề cương đề tài NCKH cấp cơ sở":
                 num = 2;
                 break;
             default:
@@ -76,10 +76,10 @@ const AddSciResCou = () => {
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" onChange={(e) => { setRole(e.target.value); calculateStandardTimeConversionRole(); }}>
                             <option value="">Ấn vào để chọn</option>
-                            <option value="roleSciResCou1">1. Chủ tịch Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở</option>
-                            <option value="roleSciResCou2">2. Ủy viên thư ký Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở</option>
-                            <option value="roleSciResCou3">3. Ủy viên Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở</option>
-                            <option value="roleSciResCou4">4. Thành viên Hội đồng đánh giá đề cương đề tài NCKH cấp cơ sở </option>
+                            <option value="1. Chủ tịch Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở">1. Chủ tịch Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở</option>
+                            <option value="2. Ủy viên thư ký Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở">2. Ủy viên thư ký Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở</option>
+                            <option value="3. Ủy viên Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở">3. Ủy viên Hội đồng nghiệm thu kết quả đề tài NCKH cấp cơ sở</option>
+                            <option value="4. Thành viên Hội đồng đánh giá đề cương đề tài NCKH cấp cơ sở">4. Thành viên Hội đồng đánh giá đề cương đề tài NCKH cấp cơ sở </option>
                         </select>
                     </div>
 
