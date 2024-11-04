@@ -6,7 +6,7 @@ import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutl
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
-
+// lọc những bài báo khoa học => lấy msnv lưu trong localStorgre để so sánh với list bài báo khoa học để lọc hiển thị theo các bài bóa của user
 const ScientificArticle = () => {
 
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const ScientificArticle = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Bạn chắc chắn muốn bài báo khoa học này?");
+    const confirmDelete = window.confirm("Bạn chắc chắn muốn xóa bài báo khoa học này?");
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost:3001/education/deleteUsers/${id}`);

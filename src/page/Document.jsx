@@ -20,12 +20,10 @@ const Document = () => {
     }
   };
   
-
   useEffect(() => {
     const fetchDocument = async () => {
       try {
         const response = await axios.get("http://localhost:3001/education/getAllDou");
-        console.log(response);
         const documentsWithNames = await Promise.all(response.data.map(async (doc) => {
           const employeeName = await fetchEmployeeName(doc.msnv);
           return { ...doc, ho_ten: employeeName };
@@ -74,7 +72,7 @@ const Document = () => {
             {documents.map((document, index) => (
               <React.Fragment key={index}>
                 <tr className="bg-gray-800 text-white border-b-2 border-white">
-                  <td className="p-2">{index + 1 || "Chưa cập nhật"}</td>
+                  <td className="p-2">{index + 1}</td>
                   <td className="p-2">{document.ho_ten || "Chưa cập nhật"}</td>
                   <td className="p-2">{document.msnv || "Chưa cập nhật"}</td>
                   <td className="p-2">{document.hoat_dong || "Chưa cập nhật"}</td>
