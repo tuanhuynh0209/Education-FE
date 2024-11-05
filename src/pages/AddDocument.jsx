@@ -1,8 +1,15 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
+import SuccessDialog from '../Dialog/SuccessDialog';
 const AddDocument = () => {
-
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+    // Hàm đóng dialog và điều hướng
+    const handleClose = () => {
+        setOpen(false);
+        navigate('/func/document'); // Chuyển đến trang bạn muốn
+    };
     const [formData, setFormData] = useState({
         msnv: 0,
         hoat_dong: '',
@@ -91,18 +98,12 @@ const AddDocument = () => {
         setFormData(prevData => ({ ...prevData, gio_quy_doi: calculatedRoleConversionHours }));
     }, [formData.gio_chuan_hoat_dong, formData.ty_le_dong_gop, calculateRoleConversionHours]);
 
-    // Cập nhật khi dữ liệu thay đổi
-    useEffect(() => {
-        calculateStandardHours();
-        calculateContributionPercentage();
-        calculateRoleConversionHours();
-    }, [calculateStandardHours, calculateContributionPercentage, calculateRoleConversionHours]);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:3001/education/AddDoc', formData);
             console.log('Tài liệu đã được thêm:', response.data);
+            setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Lỗi khi thêm tài liệu:', error);
         }
@@ -269,12 +270,13 @@ const AddDocument = () => {
                     </div>
 
                     <div className='w-full flex justify-center mt-6'>
-                        <button className='bg-[#F9A150] hover:bg-[#e08f40] rounded-lg p-4 text-lg w-fit px-20 font-bold text-white outline-none transition duration-300'>
+                        <button type='submit' className='bg-[#F9A150] hover:bg-[#e08f40] rounded-lg p-4 text-lg w-fit px-20 font-bold text-white outline-none transition duration-300'>
                             Hoàn tất
                         </button>
                     </div>
                 </div>
             </form>
+            <SuccessDialog open={open} onClose={handleClose} />
         </div>
     )
 }

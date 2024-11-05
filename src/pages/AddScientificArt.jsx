@@ -1,8 +1,16 @@
 import axios from 'axios';
 import React, { useState, useEffect, useCallback } from 'react';
-
+import { useNavigate } from 'react-router-dom';
+import SuccessDialog from '../Dialog/SuccessDialog';
 //  sử dụng localStorage để lưu msnv sau khi đăng nhập sau đó getItem khi thêm bài báo khoa học
 const AddScientificArt = () => {
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+    // Hàm đóng dialog và điều hướng
+    const handleClose = () => {
+        setOpen(false);
+        navigate('/func/scientificArticle'); // Chuyển đến trang bạn muốn
+    };
     const [formData, setFormData] = useState({
         msnv: 0,
         hoat_dong: '',
@@ -93,6 +101,7 @@ const AddScientificArt = () => {
         try {
             const response = await axios.post('http://localhost:3001/education/AddSciArt', formData);
             console.log('Bài báo đã được thêm:', response.data);
+            setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Lỗi khi thêm bài báo:', error);
         }
@@ -320,6 +329,7 @@ const AddScientificArt = () => {
                     </div>
                 </div>
             </form>
+            <SuccessDialog open={open} onClose={handleClose} />
         </div>
     );
 };

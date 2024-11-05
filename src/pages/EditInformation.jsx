@@ -1,5 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import SuccessDialog from '../Dialog/SuccessDialog';
 
 const EditInformation = () => {
   const units = [
@@ -67,7 +69,13 @@ const EditInformation = () => {
     { value: "Phòng Vật tư thiết bị", label: "Phòng Vật tư thiết bị" },
     { value: "Trung tâm Truyền thông", label: "Trung tâm Truyền thông" }
   ];
-
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  // Hàm đóng dialog và điều hướng
+  const handleClose = () => {
+      setOpen(false);
+      navigate('/func/information'); // Chuyển đến trang bạn muốn
+  };
   const [formData, setFormData] = useState({
     nam_ap_dung: 0,
     ho_ten: '',
@@ -113,6 +121,7 @@ const EditInformation = () => {
     try {
       const response = await axios.put(`http://localhost:3001/education/addInf/${userId}`, formData);
       console.log('Response:', response.data);
+      setOpen(true);  // Hiển thị dialog khi thêm thành công
     } catch (error) {
       console.error('Error:', error);
     }
@@ -291,6 +300,7 @@ const EditInformation = () => {
           </div>
         </div>
       </form>
+      <SuccessDialog open={open} onClose={handleClose} />
     </div>
   );
 };

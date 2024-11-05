@@ -14,7 +14,7 @@ const ScientificReport = () => {
   const fetchEmployeeName = async (msnv) => {
     try {
       const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
-      console.log(response);
+      // console.log(response);
       return response.data.ho_ten;
     } catch (err) {
       console.error(err);

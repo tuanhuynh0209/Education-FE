@@ -20,7 +20,7 @@ const AddScientificResPro = () => {
             case "Giấy chứng nhận đăng ký nhãn hiệu sản phẩm phát triển từ đề tài NCKH":
                 hours = 100;
                 break;
-            case "Giấy chứng nhận giải pháp hữu ích":
+            case "4. Giới thiệu sản phẩm phát triển từ đề tài/đề án nghiên cứu khoa học tại các hội chợ, triển lãm":
                 hours = 20;
                 break;
             default:
@@ -80,7 +80,7 @@ const AddScientificResPro = () => {
                             <option value="Giấy chứng nhận sáng chế độc quyền (patent)">Giấy chứng nhận sáng chế độc quyền (patent)</option>
                             <option value="Giấy chứng nhận giải pháp hữu ích">Giấy chứng nhận giải pháp hữu ích</option>
                             <option value="Giấy chứng nhận đăng ký nhãn hiệu sản phẩm phát triển từ đề tài NCKH">Giấy chứng nhận đăng ký nhãn hiệu sản phẩm phát triển từ đề tài NCKH</option>
-                            <option value="Giấy chứng nhận giải pháp hữu ích">Giấy chứng nhận giải pháp hữu ích</option>
+                            <option value="4. Giới thiệu sản phẩm phát triển từ đề tài/đề án nghiên cứu khoa học tại các hội chợ, triển lãm">4. Giới thiệu sản phẩm phát triển từ đề tài/đề án nghiên cứu khoa học tại các hội chợ, triển lãm</option>
                         </select>
                     </div>
 
