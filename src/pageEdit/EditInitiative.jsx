@@ -1,15 +1,24 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SuccessDialog from '../Dialog/SuccessDialog';
 
-const AddInitiative = () => {
+const EditInitiative = () => {
+    const { initId } = useParams();
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     // Hàm đóng dialog và điều hướng
     const handleClose = () => {
         setOpen(false);
         navigate('/func/initiative'); // Chuyển đến trang bạn muốn
+    };
+    // Hàm chuyển đổi ngày thành định dạng "yyyy-MM-dd"
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
     const [formData, setFormData] = useState({
         msnv: 0,
@@ -23,15 +32,32 @@ const AddInitiative = () => {
         ty_le_dong_gop: '',
         gio_quy_doi: ''
     });
+    const handleInputChange = (e) => {
+        const { name, value } = e.target
+        setFormData({ ...formData, [name]: value })
+    }
+
+    // fill thồng tin hiện tại cho các trường
     useEffect(() => {
-        const storeMsnv = localStorage.getItem('userId');
-        if (storeMsnv) {
-            setFormData((prevData) => ({
-                ...prevData,
-                msnv: storeMsnv,
-            }));
-        }
-    }, []);
+        const fetchOldData = async () => {
+            // const userId = localStorage.getItem('userId');
+            try {
+                const response = await axios.get(`http://localhost:3001/education/getDataInit/${initId}`);
+                const data = response.data;
+                // Kiểm tra và định dạng trường ngày tháng nếu cần
+                if (data.ngay) {
+                    data.ngay = formatDate(data.ngay);
+                }
+                setFormData(data); // Điền dữ liệu cũ vào form
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                console.log("lỗi")
+            }
+        };
+
+        fetchOldData();
+    }, [initId]);
 
     const calculateStandardHours = useCallback(() => {
         let hours = 0;
@@ -66,7 +92,11 @@ const AddInitiative = () => {
             console.error('Lỗi khi thêm sáng kiến:', err)
         }
     }
-
+    // // cập nhật dữ liệu thay đổi
+    // useEffect(() => {
+    //     calculateStandardHours();
+    //     calculateRoleConversionHours();
+    // },[calculateStandardHours, calculateRoleConversionHours]);
     return (
         <div className='mx-8 w-full'>
             <div className='w-full'>
@@ -94,7 +124,10 @@ const AddInitiative = () => {
                         </div>
                         <input
                             type="text"
-                            onChange={(e) => setFormData({ ...formData, hoat_dong: e.target.value })}
+                            name='hoat_dong'
+                            value={formData.hoat_dong}
+                            onChange={handleInputChange}
+                            // onChange={(e) => setFormData({ ...formData, hoat_dong: e.target.value })}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập hoạt động" />
                     </div>
@@ -106,7 +139,10 @@ const AddInitiative = () => {
                         </div>
                         <input
                             type="text"
-                            onChange={(e) => setFormData({ ...formData, ten_cong_trinh: e.target.value })}
+                            name='ten_cong_trinh'
+                            value={formData.ten_cong_trinh}
+                            onChange={handleInputChange}
+                            // onChange={(e) => setFormData({ ...formData, ten_cong_trinh: e.target.value })}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập thông tin" />
                     </div>
@@ -117,7 +153,10 @@ const AddInitiative = () => {
                         </div>
                         <input
                             type="text"
-                            onChange={(e) => setFormData({ ...formData, ma_so_chung_nhan: e.target.value })}
+                            name='ma_so_chung_nhan'
+                            value={formData.ma_so_chung_nhan}
+                            onChange={handleInputChange}
+                            // onChange={(e) => setFormData({ ...formData, ma_so_chung_nhan: e.target.value })}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập mã số" />
                     </div>
@@ -128,7 +167,10 @@ const AddInitiative = () => {
                         </div>
                         <input
                             type="date"
-                            onChange={(e) => setFormData({ ...formData, ngay: e.target.value })}
+                            name='ngay'
+                            value={formData.ngay}
+                            onChange={handleInputChange}
+                            // onChange={(e) => setFormData({ ...formData, ngay: e.target.value })}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" />
                     </div>
 
@@ -138,8 +180,12 @@ const AddInitiative = () => {
                         </div>
                         <select
                             type="text"
+                            name='loi_ich'
+                            value={formData.loi_ich}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, loi_ich: e.target.value })}>
+                            // onChange={(e) => setFormData({ ...formData, loi_ich: e.target.value })}
+                            >
                             <option value="">Ấn vào để chọn</option>
                             <option value="Không đem lại lợi ích kinh tế cho Bệnh viện">Không đem lại lợi ích kinh tế cho Bệnh viện</option>
                             <option value="Có đem lại lợi ích kinh tế cho Bệnh viện">Có đem lại lợi ích kinh tế cho Bệnh viện</option>
@@ -153,7 +199,10 @@ const AddInitiative = () => {
                         </div>
                         <input
                             type="number"
-                            onChange={(e) => setFormData({ ...formData, so_tien_loi_ich: e.target.value })}
+                            name='so_tien_loi_ich'
+                            value={formData.so_tien_loi_ich}
+                            onChange={handleInputChange}
+                            // onChange={(e) => setFormData({ ...formData, so_tien_loi_ich: e.target.value })}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập số tiền" />
                     </div>
@@ -164,7 +213,9 @@ const AddInitiative = () => {
                         </div>
                         <input
                             type="number"
+                            name='gio_chuan_hoat_dong'
                             value={formData.gio_chuan_hoat_dong}
+                            onChange={handleInputChange}
                             readOnly
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder='Nhập giờ chuẩn' />
@@ -176,7 +227,10 @@ const AddInitiative = () => {
                         </div>
                         <input
                             type="number"
-                            onChange={(e) => setFormData({ ...formData, ty_le_dong_gop: e.target.value })}
+                            name='ty_le_dong_gop'
+                            value={formData.ty_le_dong_gop}
+                            onChange={handleInputChange}
+                            // onChange={(e) => setFormData({ ...formData, ty_le_dong_gop: e.target.value })}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder='Nhập số liệu' />
                     </div>
@@ -188,7 +242,9 @@ const AddInitiative = () => {
                         <input
                             type="number"
                             readOnly
+                            name='gio_quy_doi'
                             value={formData.gio_quy_doi}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập số giờ" />
                     </div>
@@ -205,4 +261,4 @@ const AddInitiative = () => {
     )
 }
 
-export default AddInitiative
+export default EditInitiative

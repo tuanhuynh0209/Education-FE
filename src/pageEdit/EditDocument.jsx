@@ -1,14 +1,23 @@
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SuccessDialog from '../Dialog/SuccessDialog';
-const AddDocument = () => {
+const EditDocument = () => {
+    const { docId } = useParams();
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     // Hàm đóng dialog và điều hướng
     const handleClose = () => {
         setOpen(false);
         navigate('/func/document'); // Chuyển đến trang bạn muốn
+    };
+    // Hàm chuyển đổi ngày thành định dạng "yyyy-MM-dd"
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
     const [formData, setFormData] = useState({
         msnv: 0,
@@ -25,16 +34,30 @@ const AddDocument = () => {
         gio_quy_doi: '',
         tai_ban: ''
     });
-    
+    const handleInputChange = (e) => {
+        const { name, value } = e.target
+        setFormData({ ...formData, [name]: value })
+    }
+    // fill thông tin hiện tại cho các trường
     useEffect(() => {
-        const storeMsnv = localStorage.getItem('userId');
-        if (storeMsnv) {
-            setFormData((prevData) => ({
-                ...prevData,
-                msnv: storeMsnv,
-            }));
-        }
-    }, []);
+        const fetchOldData = async () => {
+            // const userId = localStorage.getItem('userId');
+            try {
+                const response = await axios.get(`http://localhost:3001/education/getDataDoc/${docId}`);
+                const data = response.data;
+                // Kiểm tra và định dạng trường ngày tháng nếu cần
+                if (data.ngay_xuat_ban) {
+                    data.ngay_xuat_ban = formatDate(data.ngay_xuat_ban);
+                }
+                setFormData(data); // Điền dữ liệu cũ vào form
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchOldData();
+    }, [docId]);
 
     const calculateStandardHours = useCallback(() => {
         const numTotalPage = parseFloat(formData.tong_so_trang) || 0;
@@ -77,9 +100,9 @@ const AddDocument = () => {
         // Tính phần đóng góp theo vai trò
         let roleContribution = 0;
         if (formData.vai_tro === "Chủ biên") {
-            roleContribution = 10;
+            roleContribution = 0.1;
         } else if (formData.vai_tro === "Thư ký") {
-            roleContribution = 5;
+            roleContribution = 0.05;
         }
         // Tổng tỷ lệ đóng góp
         const pageContributionPer = contributionBase + roleContribution;
@@ -99,16 +122,15 @@ const AddDocument = () => {
         setFormData(prevData => ({ ...prevData, gio_quy_doi: calculatedRoleConversionHours }));
     }, [formData.gio_chuan_hoat_dong, formData.ty_le_dong_gop, calculateRoleConversionHours]);
 
-
-    // hàm thêm tài liệu
+    // hàm call api chỉnh sửa Doc
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/education/AddDoc', formData);
-            console.log('Tài liệu đã được thêm:', response.data);
+            const response = await axios.put(`http://localhost:3001/education/editDataDoc/${docId}`, formData);
+            console.log('Response:', response.data);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
-            console.error('Lỗi khi thêm tài liệu:', error);
+            console.error('Error:', error);
         }
     };
     return (
@@ -135,8 +157,13 @@ const AddDocument = () => {
                         <div className="flex gap-2 items-center">
                             <p className='font-medium text-lg'>Hoạt động</p>
                         </div>
-                        <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, hoat_dong: e.target.value })}>
+                        <select
+                            name='hoat_dong'
+                            className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+                            // onChange={(e) => setFormData({ ...formData, hoat_dong: e.target.value })}
+                            value={formData.hoat_dong}
+                            onChange={handleInputChange}
+                        >
                             <option value="">Ấn vào để chọn</option>
                             <option value="Biên dịch tài liệu">Biên dịch tài liệu</option>
                             <option value="Biên soạn Sách chuyên khảo">Biên soạn Sách chuyên khảo</option>
@@ -149,8 +176,13 @@ const AddDocument = () => {
                         <div className="flex gap-2 items-center">
                             <p className='font-medium text-lg'>Tái bản, xuất bản</p>
                         </div>
-                        <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, tai_ban: e.target.value })}>
+                        <select
+                            name='tai_ban'
+                            className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+                            // onChange={(e) => setFormData({ ...formData, tai_ban: e.target.value })}
+                            value={formData.tai_ban}
+                            onChange={handleInputChange}
+                        >
                             <option value="">Ấn vào để chọn</option>
                             <option value="Xuất bản">Xuất bản</option>
                             <option value="Tái bản">Tái bản</option>
@@ -163,7 +195,10 @@ const AddDocument = () => {
                         </div>
                         <input
                             type="text"
-                            onChange={(e) => setFormData({ ...formData, ten_sach: e.target.value })}
+                            name='ten_sach'
+                            // onChange={(e) => setFormData({ ...formData, ten_sach: e.target.value })}
+                            value={formData.ten_sach}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập tên sách, tài liệu" />
                     </div>
@@ -172,18 +207,28 @@ const AddDocument = () => {
                         <div className="flex gap-2 items-center">
                             <p className='font-medium text-lg'>Tổng số trang sách, tài liệu</p>
                         </div>
-                        <input type="text"
+                        <input
+                            type="text"
+                            name='tong_so_trang'
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập số trang"
-                            onChange={(e) => setFormData({ ...formData, tong_so_trang: e.target.value })} />
+                            // onChange={(e) => setFormData({ ...formData, tong_so_trang: e.target.value })} 
+                            value={formData.tong_so_trang}
+                            onChange={handleInputChange}
+                        />
                     </div>
 
                     <div className="flex flex-col gap-1">
                         <div className="flex gap-2 items-center">
                             <p className='font-medium text-lg'>Ngôn ngữ xuất bản</p>
                         </div>
-                        <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, ngon_ngu: e.target.value })}>
+                        <select
+                            name='ngon_ngu'
+                            className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+                            // onChange={(e) => setFormData({ ...formData, ngon_ngu: e.target.value })}
+                            value={formData.ngon_ngu}
+                            onChange={handleInputChange}
+                        >
                             <option value="">Ấn vào để chọn</option>
                             <option value="Tiếng Việt">Tiếng Việt</option>
                             <option value="Tiếng Nga">Tiếng Nga</option>
@@ -200,7 +245,10 @@ const AddDocument = () => {
                         </div>
                         <input
                             type="date"
-                            onChange={(e) => setFormData({ ...formData, ngay_xuat_ban: e.target.value })}
+                            name='ngay_xuat_ban'
+                            // onChange={(e) => setFormData({ ...formData, ngay_xuat_ban: e.target.value })}
+                            value={formData.ngay_xuat_ban}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" />
                     </div>
 
@@ -210,6 +258,7 @@ const AddDocument = () => {
                         </div>
                         <input
                             type="text"
+                            name='gio_chuan_hoat_dong'
                             readOnly
                             value={formData.gio_chuan_hoat_dong}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" placeholder='Nhập giờ chuẩn' />
@@ -220,12 +269,17 @@ const AddDocument = () => {
                         <div className="flex gap-2 items-center">
                             <p className='font-medium text-lg'>Vai trò</p>
                         </div>
-                        <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, vai_tro: e.target.value })}>
+                        <select
+                            name='vai_tro'
+                            className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+                            // onChange={(e) => setFormData({ ...formData, vai_tro: e.target.value })}
+                            value={formData.vai_tro}
+                            onChange={handleInputChange}
+                        >
                             <option value="">Ấn vào để chọn</option>
                             <option value="Chủ biên">Chủ biên</option>
                             <option value="Thư ký">Thư ký</option>
-                            <option value="roleMem">Thành viên biên soạn (bao gồm cả chủ biên)</option>
+                            <option value="Thành viên biên soạn bao gồm cả chủ biên">Thành viên biên soạn (bao gồm cả chủ biên)</option>
                         </select>
                     </div>
 
@@ -233,20 +287,30 @@ const AddDocument = () => {
                         <div className="flex gap-2 items-center">
                             <p className='font-medium text-lg'>Số thành viên ban biên soạn</p>
                         </div>
-                        <input type="text"
+                        <input
+                            type="text"
+                            name='tong_so_thanh_vien'
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập số thành viên"
-                            onChange={(e) => setFormData({ ...formData, tong_so_thanh_vien: e.target.value })} />
+                            // onChange={(e) => setFormData({ ...formData, tong_so_thanh_vien: e.target.value })} 
+                            value={formData.tong_so_thanh_vien}
+                            onChange={handleInputChange}
+                        />
                     </div>
 
                     <div className="flex flex-col gap-1">
                         <div className="flex gap-2 items-center">
                             <p className='font-medium text-lg'>Số trang phụ trách</p>
                         </div>
-                        <input type="text"
+                        <input
+                            type="text"
+                            name='tong_so_trang_phu_trach'
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập số trang"
-                            onChange={(e) => setFormData({ ...formData, tong_so_trang_phu_trach: e.target.value })} />
+                            // onChange={(e) => setFormData({ ...formData, tong_so_trang_phu_trach: e.target.value })} 
+                            value={formData.tong_so_trang_phu_trach}
+                            onChange={handleInputChange}
+                        />
                     </div>
 
                     <div className="flex flex-col gap-1">
@@ -255,6 +319,7 @@ const AddDocument = () => {
                         </div>
                         <input
                             type="text"
+                            name='ty_le_dong_gop'
                             readOnly
                             value={(formData.ty_le_dong_gop * 100) + '%'}
                             // value={isNaN(formData.ty_le_dong_gop* 100) + '%' ? '' : (formData.ty_le_dong_gop* 100) + '%'}
@@ -267,6 +332,7 @@ const AddDocument = () => {
                         </div>
                         <input
                             type="text"
+                            name='gio_quy_doi'
                             readOnly
                             value={isNaN(formData.gio_quy_doi) ? '' : formData.gio_quy_doi}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" />
@@ -284,4 +350,4 @@ const AddDocument = () => {
     )
 }
 
-export default AddDocument
+export default EditDocument

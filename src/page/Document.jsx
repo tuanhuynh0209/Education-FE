@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 const Document = () => {
 
   const navigate = useNavigate();
-  const [documents, setDocumnet] = useState([]);
+  const [documents, setDocument] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const fetchEmployeeName = async (msnv) => {
     try {
       const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
@@ -19,25 +22,70 @@ const Document = () => {
       return '';
     }
   };
-  
+
+  // check tk admin
   useEffect(() => {
-    const fetchDocument = async () => {
+    const fetchUserRole = () => {
+      const userId = localStorage.getItem('userId');
+      // Kiểm tra nếu username là admin
+      setIsAdmin(userId === "admin123");
+    };
+
+    fetchUserRole();
+  }, []);
+
+  // hàm check user - admin để hiển thị list tương ứng
+  useEffect(() => {
+    const fetchUserRoleAndData = async () => {
+      const userId = localStorage.getItem('userId');
+      const isAdminUser = userId === "admin123";
+      setIsAdmin(isAdminUser);
+
+      // Fetch users based on role
       try {
-        const response = await axios.get("http://localhost:3001/education/getAllDou");
-        const documentsWithNames = await Promise.all(response.data.map(async (doc) => {
-          const employeeName = await fetchEmployeeName(doc.msnv);
-          return { ...doc, ho_ten: employeeName };
-        }));
-        setDocumnet(documentsWithNames);
+        if (isAdminUser) {
+          const response = await axios.get("http://localhost:3001/education/getAllDou");
+          const documentsWithNames = await Promise.all(response.data.map(async (doc) => {
+            const employeeName = await fetchEmployeeName(doc.msnv);
+            return { ...doc, ho_ten: employeeName };
+          }));
+          setDocument(documentsWithNames);
+        } else {
+          const response = await axios.get(`http://localhost:3001/education/getDocOfUser/${userId}`);
+          const documentsWithNames = await Promise.all(response.data.map(async (doc) => {
+            const employeeName = await fetchEmployeeName(doc.msnv);
+            return { ...doc, ho_ten: employeeName };
+          }));
+          setDocument(documentsWithNames);
+        }
       } catch (err) {
         console.error(err);
       }
     };
-    fetchDocument();
+
+    fetchUserRoleAndData();
   }, []);
-  
+
+  // hàm xóa tài liệu
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Bạn chắc chắn muốn xóa bài đăng này?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/education/deleteDoc/${id}`);
+        setDocument(documents.filter(doc => doc.ma_tai_lieu !== id));
+        alert("Document deleted successfully");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  // điều hướng
   const handleAddClick = () => {
-    navigate('/func/document/addDocument');
+    navigate(`/func/document/addDocument`);
+  };
+  const handleEditClick = (docId) => {
+    navigate(`/func/document/editDocument/${docId}`);
   };
 
   const toggleExpand = (index) => {
@@ -63,9 +111,11 @@ const Document = () => {
               <th className="p-2">STT</th>
               <th className="p-2">Họ và tên</th>
               <th className="p-2">Mã số nhân viên</th>
-              <th className="p-2">Hoạt động</th>
+              <th className="p-2">Mã tài liệu</th>
               <th className="p-2">Tên sách, tài liệu</th>
-              <th className="p-2"></th>
+              <th className="p-2">Chỉnh sửa</th>
+              <th className="p-2">Xóa</th>
+              <th className="p-2">Mở rộng</th>
             </tr>
           </thead>
           <tbody>
@@ -75,8 +125,20 @@ const Document = () => {
                   <td className="p-2">{index + 1}</td>
                   <td className="p-2">{document.ho_ten || "Chưa cập nhật"}</td>
                   <td className="p-2">{document.msnv || "Chưa cập nhật"}</td>
-                  <td className="p-2">{document.hoat_dong || "Chưa cập nhật"}</td>
+                  <td className="p-2">{document.ma_tai_lieu || "Chưa cập nhật"}</td>
                   <td className="p-2">{document.ten_sach || "Chưa cập nhật"}</td>
+                  <td>
+                    <button onClick={() => handleEditClick(document.ma_tai_lieu)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                      <ModeEditOutlineOutlinedIcon className='text-white' />
+                    </button>
+                  </td>
+
+                  <td className="p-2">
+                    <button onClick={() => handleDelete(document.ma_tai_lieu)} className="bg-red-600 text-white p-2 rounded">
+                      <DeleteIcon />
+                    </button>
+                  </td>
+
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -85,10 +147,14 @@ const Document = () => {
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
 
-                  <td className="p-4" colSpan="5">
+                  <td className="p-4" colSpan="7">
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">
                         <tbody>
+                          <tr className="py-2">
+                            <td className="font-semibold text-gray-700 w-1/2 py-2">Hoạt động</td>
+                            <td className="text-gray-600 py-2">{document.hoat_dong || "Chưa cập nhật"}</td>
+                          </tr>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Tái bản, xuất bản</td>
                             <td className="text-gray-600 py-2">{document.tai_ban || "Chưa cập nhật"}</td>

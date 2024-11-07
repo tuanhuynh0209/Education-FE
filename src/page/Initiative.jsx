@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
-
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Initiative = () => {
 
   const navigate = useNavigate();
   const [initatives, setInitative] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  // hàm call api lấy data user để lấy tên user
   const fetchEmployeeName = async (msnv) => {
     try {
       const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
@@ -20,26 +23,58 @@ const Initiative = () => {
     }
   };
 
+  // hàm check user - admin để hiển thị list tương ứng
   useEffect(() => {
-    const fetchInitative = async () => {
+    const fetchUserRoleAndData = async () => {
+      const userId = localStorage.getItem('userId');
+      const isAdminUser = userId === "admin123";
+      setIsAdmin(isAdminUser);
+
+      // Fetch users based on role
       try {
-        const response = await axios.get("http://localhost:3001/education/getAllInit");
-      console.log(response);
-      const initativeWName = await Promise.all(response.data.map(async (init) => {
-        const employeeName = await fetchEmployeeName(init.msnv);
-        return {...init, ho_ten: employeeName};
-      }));
-      setInitative(initativeWName);
+        if (isAdminUser) {
+          const response = await axios.get("http://localhost:3001/education/getAllInit");
+          const initativeWName = await Promise.all(response.data.map(async (init) => {
+            const employeeName = await fetchEmployeeName(init.msnv);
+            return { ...init, ho_ten: employeeName };
+          }));
+          setInitative(initativeWName);
+        } else {
+          const response = await axios.get(`http://localhost:3001/education/getInitOfUser/${userId}`);
+          const initativeWName = await Promise.all(response.data.map(async (init) => {
+            const employeeName = await fetchEmployeeName(init.msnv);
+            return { ...init, ho_ten: employeeName };
+          }));
+          setInitative(initativeWName);
+        }
       } catch (err) {
         console.error(err);
       }
     };
-    fetchInitative();
-  },[]);
+
+    fetchUserRoleAndData();
+  }, []);
+
+  // hàm xóa tài liệu
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Bạn chắc chắn muốn xóa bài đăng này?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/education/deleteInit/${id}`);
+        setInitative(initatives.filter(init => init.ma_sang_kien !== id));
+        alert("Initiative deleted successfully");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+  // điều hướng
   const handleAddClick = () => {
     navigate('/func/Initiative/addInitiative');
   };
-
+  const handleEditClick = (initId) => {
+    navigate(`/func/initiative/editInitiative/${initId}`);
+  };
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
@@ -65,7 +100,9 @@ const Initiative = () => {
               <th className="p-2">Mã số nhân viên</th>
               <th className="p-2">Hoạt động</th>
               <th className="p-2">Tên công trình, sáng kiến đã được công nhận</th>
-              <th className="p-2"></th>
+              <th className="p-2">Chỉnh sửa</th>
+              <th className="p-2">Xóa</th>
+              <th className="p-2">Mở rộng</th>
             </tr>
           </thead>
           <tbody>
@@ -77,6 +114,17 @@ const Initiative = () => {
                   <td className="p-2">{initiative.msnv || "Chưa cập nhật"}</td>
                   <td className="p-2">{initiative.hoat_dong || "Chưa cập nhật"}</td>
                   <td className="p-2">{initiative.ten_cong_trinh || "Chưa cập nhật"}</td>
+                  <td>
+                    <button onClick={() => handleEditClick(initiative.ma_sang_kien)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                      <ModeEditOutlineOutlinedIcon className='text-white' />
+                    </button>
+                  </td>
+
+                  <td className="p-2">
+                    <button onClick={() => handleDelete(initiative.ma_sang_kien)} className="bg-red-600 text-white p-2 rounded">
+                      <DeleteIcon />
+                    </button>
+                  </td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -85,7 +133,7 @@ const Initiative = () => {
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
 
-                  <td className="p-4" colSpan="5">
+                  <td className="p-4" colSpan="7">
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">
                         <tbody>
@@ -105,8 +153,8 @@ const Initiative = () => {
                           </tr>
 
                           <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Số tiền lợi ích kinh tế mang lại cho Bệnh viện 
-                            (đơn vị tính: trăm triệu)</td>
+                            <td className="font-semibold text-gray-700 py-2">Số tiền lợi ích kinh tế mang lại cho Bệnh viện
+                              (đơn vị tính: trăm triệu)</td>
                             <td className="text-gray-600 py-2">{initiative.so_tien_loi_ich || "Chưa cập nhật"}</td>
                           </tr>
 

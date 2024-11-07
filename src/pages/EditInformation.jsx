@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import SuccessDialog from '../Dialog/SuccessDialog';
 
 const EditInformation = () => {
@@ -70,6 +70,7 @@ const EditInformation = () => {
     { value: "Trung tâm Truyền thông", label: "Trung tâm Truyền thông" }
   ];
   const [open, setOpen] = useState(false);
+  const { userId } = useParams();
   const navigate = useNavigate();
   // Hàm đóng dialog và điều hướng
   const handleClose = () => {
@@ -96,9 +97,11 @@ const EditInformation = () => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
   }
+
+  // fill thông tin hiện tại cho các trường
   useEffect(() => {
     const fetchOldData = async () => {
-      const userId = localStorage.getItem('userId');
+      // const userId = localStorage.getItem('userId');
       try {
         const response = await axios.get(`http://localhost:3001/education/users/${userId}`);
         setFormData(response.data); // Điền dữ liệu cũ vào form
@@ -108,16 +111,16 @@ const EditInformation = () => {
     };
 
     fetchOldData();
-  }, []);
+  }, [userId]);
 
   // nút edit của user
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userId = localStorage.getItem('userId'); // Lấy userId từ storage
-    if (!userId) {
-      console.error('User ID not found');
-      return;
-    }
+    // const userId = localStorage.getItem('userId'); // Lấy userId từ storage
+    // if (!userId) {
+    //   console.error('User ID not found');
+    //   return;
+    // }
     try {
       const response = await axios.put(`http://localhost:3001/education/addInf/${userId}`, formData);
       console.log('Response:', response.data);

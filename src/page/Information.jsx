@@ -9,19 +9,59 @@ const Information = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
+  // useEffect(() => {
+  //   const fetchUserRole = () => {
+  //     const userId = localStorage.getItem('userId');
+  //     // Kiểm tra nếu username là admin
+  //     setIsAdmin(userId === "admin123");
+  //   };
+
+  //   fetchUserRole();
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     const id = localStorage.getItem('userId');
+  //     try {
+  //       if (isAdmin) {
+  //         const response = await axios.get('http://localhost:3001/education/users');
+  //         setUsers(response.data);
+  //       } else {
+  //         const response = await axios.get(`http://localhost:3001/education/user/${id}`);
+  //         setUsers(response.data); // Đưa vào mảng để hiển thị 1 user
+  //       }
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
+  //   fetchUsers();
+  // }, [isAdmin]);
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUserRoleAndData = async () => {
+      const userId = localStorage.getItem('userId');
+      const isAdminUser = userId === "admin123";
+      setIsAdmin(isAdminUser);
+      
+      // Fetch users based on role
       try {
-        const response = await axios.get('http://localhost:3001/education/users');
-        setUsers(response.data);
+        if (isAdminUser) {
+          const response = await axios.get('http://localhost:3001/education/users');
+          setUsers(response.data);
+        } else {
+          const response = await axios.get(`http://localhost:3001/education/user/${userId}`);
+          setUsers(response.data);
+        }
       } catch (err) {
         console.error(err);
       }
     };
-    fetchUsers();
-  }, []);
 
+    fetchUserRoleAndData();
+  }, []); 
+
+  // hàm xóa user
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Bạn chắc chắn muốn xóa người dùng này?");
     if (confirmDelete) {
@@ -35,9 +75,9 @@ const Information = () => {
       }
     }
   };
-
-  const handleEditClick = () => {
-    navigate('/func/information/editInf');
+  // điều hướng
+  const handleEditClick = (userId) => {
+    navigate(`/func/information/editInf/${userId}`);
   };
 
   const toggleExpand = (index) => {
@@ -50,10 +90,12 @@ const Information = () => {
         <span className='text-3xl font-semibold text-white block text-center break-words pr-20'>
           THÔNG TIN VIÊN CHỨC
         </span>
-        <button onClick={handleEditClick} className='absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
-          <span>Chỉnh sửa</span>
-          <ModeEditOutlineOutlinedIcon className='text-white' />
-        </button>
+        {isAdmin && (
+          <button onClick={handleEditClick} className='absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+            <span>Thêm người dùng</span>
+            <ModeEditOutlineOutlinedIcon className='text-white' />
+          </button>
+        )}
       </div>
       <div className="bg-slate-300 w-full mt-5">
         <table className="table-auto w-full text-center" style={{ tableLayout: 'fixed' }}>
@@ -65,7 +107,7 @@ const Information = () => {
               <th className="p-2">Cơ sở</th>
               <th className="p-2">Đơn vị</th>
               <th className="p-2">Chỉnh sửa</th>
-              <th className="p-2">Xóa</th>
+              {isAdmin && <th className="p-2">Xóa</th>}
               <th className="p-2">Mở rộng</th>
             </tr>
           </thead>
@@ -78,18 +120,21 @@ const Information = () => {
                   <td className="p-2">{user.msnv}</td>
                   <td className="p-2">{user.co_so || "Chưa cập nhật"}</td>
                   <td className="p-2">{user.don_vi || "Chưa cập nhật"}</td>
+
                   <td>
-                    {/* nút chỉnh sửa này đang sài cho user */}
-                    <button onClick={handleEditClick} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
-                      {/* <span>Chỉnh sửa</span> */}
+                    <button onClick={() => handleEditClick(user.msnv)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
                       <ModeEditOutlineOutlinedIcon className='text-white' />
                     </button>
                   </td>
-                  <td className="p-2">
-                    <button onClick={() => handleDelete(user.msnv)} className="bg-red-600 text-white p-2 rounded">
-                      <DeleteIcon />
-                    </button>
-                  </td>
+
+                  {isAdmin && (
+                    <td className="p-2">
+                      <button onClick={() => handleDelete(user.msnv)} className="bg-red-600 text-white p-2 rounded">
+                        <DeleteIcon />
+                      </button>
+                    </td>
+                  )}
+
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}

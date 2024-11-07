@@ -49,7 +49,7 @@ const TopNav = () => {
             const response = await axios.post('http://localhost:3001/education/login', formData);
             setSuccessMessage('Đăng nhập thành công!');
             setErrorMessage('');
-            const userId = response.data.msnv; // Đảm bảo rằng ID người dùng là 'msnv' hoặc tùy vào cấu trúc dữ liệu trả về
+            const userId = response.data.msnv;
             localStorage.setItem('userId', userId);
             console.log(userId);
             setFormData({

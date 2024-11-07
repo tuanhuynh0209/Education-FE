@@ -25,6 +25,8 @@ import ScientificConferences from '../page/ScientificConferences';
 import AddScientificCfs from '../pages/AddScientificCfs';
 import AddScientificResPro from '../pages/AddScientificResPro';
 import AddInitiative from '../pages/AddInitiative';
+import EditDocument from '../pageEdit/EditDocument';
+import EditInitiative from '../pageEdit/EditInitiative';
 
 const Router = () => {
   return (
@@ -39,7 +41,7 @@ const Router = () => {
 
       <Route path='/func' element={<MainPage/>}>
         <Route path='/func/information' element={<Information/>}/>
-        <Route path='/func/information/editInf' element={<EditInformation/>}/>
+        <Route path='/func/information/editInf/:userId' element={<EditInformation/>}/>
         <Route path='/func/scientificArticle' element={<ScientificArticle/>}/>
         <Route path='/func/scientificArticle/addSciArt' element={<AddScientificArt/>}/>
         <Route path='/func/scientificResearchTopic' element={<ScientificResearchTopic/>}/>
@@ -48,6 +50,7 @@ const Router = () => {
         <Route path='/func/scientificResearchCouncil/addSciResCou' element={<AddSciResCou/>}/>
         <Route path='/func/document' element={<Document/>}/>  
         <Route path='/func/document/addDocument' element={<AddDocument/>}/>
+        <Route path='/func/document/editDocument/:docId' element={<EditDocument/>}/>
         <Route path='/func/scientificReport' element={<ScientificReport/>}/>
         <Route path='/func/scientificReport/addSciReport' element={<AddScientificReport/>}/>
         <Route path='/func/scientificConferences' element={<ScientificConferences/>}/>
@@ -56,6 +59,7 @@ const Router = () => {
         <Route path='/func/scientificResearchProduct/addScientificResPro' element={<AddScientificResPro/>}/>
         <Route path='/func/initiative' element={<Initiative/>}/>
         <Route path='/func/initiative/addInitiative' element={<AddInitiative/>}/>
+        <Route path='/func/initiative/editInitiative/:initId' element={<EditInitiative/>}/>
         <Route path='/func/statistic' element={<Statistic/>}/>
       </Route>
       {/* sidebar */}
