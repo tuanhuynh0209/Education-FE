@@ -126,8 +126,7 @@ const EditDocument = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:3001/education/editDataDoc/${docId}`, formData);
-            console.log('Response:', response.data);
+            await axios.put(`http://localhost:3001/education/editDataDoc/${docId}`, formData);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Error:', error);

@@ -52,7 +52,6 @@ const EditInitiative = () => {
 
             } catch (error) {
                 console.error('Error fetching data:', error);
-                console.log("lỗi")
             }
         };
 
@@ -81,22 +80,16 @@ const EditInitiative = () => {
         setFormData(prevData => ({ ...prevData, gio_quy_doi: calculatedRoleConversionHours }));
     }, [formData.gio_chuan_hoat_dong, formData.ty_le_dong_gop, calculateRoleConversionHours]);
 
-    // Hàm call api thêm sáng kiến
+    // Hàm call api chỉnh sửa sáng kiến
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/education/AddInit', formData);
-            console.log("Sáng kiến đã được thêm: ", response.data);
+            await axios.put(`http://localhost:3001/education/editDataInit/${initId}`, formData);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (err) {
             console.error('Lỗi khi thêm sáng kiến:', err)
         }
     }
-    // // cập nhật dữ liệu thay đổi
-    // useEffect(() => {
-    //     calculateStandardHours();
-    //     calculateRoleConversionHours();
-    // },[calculateStandardHours, calculateRoleConversionHours]);
     return (
         <div className='mx-8 w-full'>
             <div className='w-full'>
