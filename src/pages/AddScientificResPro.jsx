@@ -79,7 +79,6 @@ const AddScientificResPro = () => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:3001/education/AddSciResPro', formData);
-            console.log('Tài liệu đã được thêm:', response.data);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Lỗi khi thêm tài liệu:', error);

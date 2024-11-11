@@ -3,14 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
-
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const ScientificReport = () => {
 
   const navigate = useNavigate();
   const [report, setReport] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
-
+  const [isAdmin, setIsAdmin] = useState(false)
   const fetchEmployeeName = async (msnv) => {
     try {
       const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
@@ -20,25 +21,68 @@ const ScientificReport = () => {
       console.error(err);
     }
   }
-
+  // check tk admin
   useEffect(() => {
-    const fetchReport = async() => {
+    const fetchUserRole = () => {
+      const userId = localStorage.getItem('userId');
+      // Kiểm tra nếu username là admin
+      setIsAdmin(userId === "admin123");
+    };
+
+    fetchUserRole();
+  }, []);
+
+  // hàm check user - admin để hiển thị list tương ứng
+  useEffect(() => {
+    const fetchUserRoleAndData = async () => {
+      const userId = localStorage.getItem('userId');
+      const isAdminUser = userId === "admin123";
+      setIsAdmin(isAdminUser);
+
+      // Fetch users based on role
       try {
-        const response = await axios.get("http://localhost:3001/education/getAllSciRep");
-        const reportWName = await Promise.all(response.data.map(async(rep) => {
-          const employeeName = await fetchEmployeeName(rep.msnv);
-          return {...rep, ho_ten: employeeName};
-        }));
-        setReport(reportWName);
+        if (isAdminUser) {
+          const response = await axios.get("http://localhost:3001/education/getAllSciRep");
+          const reportWName = await Promise.all(response.data.map(async (rep) => {
+            const employeeName = await fetchEmployeeName(rep.msnv);
+            return { ...rep, ho_ten: employeeName };
+          }));
+          setReport(reportWName);
+        } else {
+          const response = await axios.get(`http://localhost:3001/education/getRepOfUser/${userId}`);
+          const reportWName = await Promise.all(response.data.map(async (rep) => {
+            const employeeName = await fetchEmployeeName(rep.msnv);
+            return { ...rep, ho_ten: employeeName };
+          }));
+          setReport(reportWName);
+        }
       } catch (err) {
         console.error(err);
       }
     };
-    fetchReport();
-  },[]);
+
+    fetchUserRoleAndData();
+  }, []);
+
+  // hàm xóa tài liệu
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Bạn chắc chắn muốn xóa bài đăng này?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/education/deleteRpt/${id}`);
+        setReport(report.filter(rep => rep.ma_bao_cao !== id));
+        alert("Report deleted successfully");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   const handleAddClick = () => {
     navigate('/func/scientificReport/addSciReport');
+  };
+  const handleEditClick = (repId) => {
+    navigate(`/func/scientificReport/editSciReport/${repId}`);
   };
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -63,9 +107,11 @@ const ScientificReport = () => {
               <th className="p-2">STT</th>
               <th className="p-2">Họ và tên</th>
               <th className="p-2">Mã số nhân viên</th>
-              <th className="p-2">Hoạt động</th>
+              <th className="p-2">Mã báo cáo</th>
               <th className="p-2">Tên bài fulltext đã báo cáo</th>
-              <th className="p-2"></th>
+              <th className="p-2">Chỉnh sửa</th>
+              <th className="p-2">Xóa</th>
+              <th className="p-2">Mở rộng</th>
             </tr>
           </thead>
           <tbody>
@@ -75,8 +121,20 @@ const ScientificReport = () => {
                   <td className="p-2">{index + 1}</td>
                   <td className="p-2">{scientificReport.ho_ten}</td>
                   <td className="p-2">{scientificReport.msnv}</td>
-                  <td className="p-2">{scientificReport.hoat_dong || "Chưa cập nhật"}</td>
+                  <td className="p-2">{scientificReport.ma_bao_cao || "Chưa cập nhật"}</td>
                   <td className="p-2">{scientificReport.ten_bai_fulltext || "Chưa cập nhật"}</td>
+                  <td>
+                    <button onClick={() => handleEditClick(scientificReport.ma_bao_cao)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                      <ModeEditOutlineOutlinedIcon className='text-white' />
+                    </button>
+                  </td>
+
+                  <td className="p-2">
+                    <button onClick={() => handleDelete(scientificReport.ma_bao_cao)} className="bg-red-600 text-white p-2 rounded">
+                      <DeleteIcon />
+                    </button>
+                  </td>
+
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -85,10 +143,14 @@ const ScientificReport = () => {
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
 
-                  <td className="p-4" colSpan="5">
+                  <td className="p-4" colSpan="7">
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">
                         <tbody>
+                          <tr className="py-2">
+                            <td className="font-semibold text-gray-700 w-1/2 py-2">Hoạt động</td>
+                            <td className="text-gray-600 py-2">{scientificReport.hoat_dong || "Chưa cập nhật"}</td>
+                          </tr>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Tên đề tài đã báo cáo</td>
                             <td className="text-gray-600 py-2">{scientificReport.ten_de_tai || "Chưa cập nhật"}</td>

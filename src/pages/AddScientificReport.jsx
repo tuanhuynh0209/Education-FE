@@ -8,7 +8,7 @@ const AddScientificReport = () => {
     // Hàm đóng dialog và điều hướng
     const handleClose = () => {
         setOpen(false);
-        navigate('/func/scientificArticle'); // Chuyển đến trang bạn muốn
+        navigate('/func/scientificReport'); // Chuyển đến trang bạn muốn
     };
 
     const [formData, setFormData] = useState({
