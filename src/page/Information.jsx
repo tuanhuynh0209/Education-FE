@@ -11,33 +11,6 @@ const Information = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchUserRole = () => {
-  //     const userId = localStorage.getItem('userId');
-  //     // Kiểm tra nếu username là admin
-  //     setIsAdmin(userId === "admin123");
-  //   };
-
-  //   fetchUserRole();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchUsers = async () => {
-  //     const id = localStorage.getItem('userId');
-  //     try {
-  //       if (isAdmin) {
-  //         const response = await axios.get('http://localhost:3001/education/users');
-  //         setUsers(response.data);
-  //       } else {
-  //         const response = await axios.get(`http://localhost:3001/education/user/${id}`);
-  //         setUsers(response.data); // Đưa vào mảng để hiển thị 1 user
-  //       }
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   };
-  //   fetchUsers();
-  // }, [isAdmin]);
   useEffect(() => {
     const fetchUserRoleAndData = async () => {
       const userId = localStorage.getItem('userId');

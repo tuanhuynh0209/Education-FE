@@ -121,6 +121,19 @@ const EditScientificCfs = () => {
                             value={formData.ten_hoi_nghi}
                             onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
+                            placeholder="Nhập tên hội nghị" />
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                        <div className="flex gap-2 items-center">
+                            <p className='font-medium text-lg'>Tên hội nghị khoa học đã tham dự</p>
+                        </div>
+                        <input
+                            type="text"
+                            name='ten_hoi_nghi'
+                            value={formData.don_vi_to_chuc}
+                            onChange={handleInputChange}
+                            className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập đơn vị" />
                     </div>
 

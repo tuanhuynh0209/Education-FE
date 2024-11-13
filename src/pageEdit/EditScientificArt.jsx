@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SuccessDialog from '../Dialog/SuccessDialog';
 //  sử dụng localStorage để lưu msnv sau khi đăng nhập sau đó getItem khi thêm bài báo khoa học
 const EditScientificArt = () => {
-    const { artId } = useParams();
+    const { artIdnp } = useParams();
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     // Hàm đóng dialog và điều hướng
@@ -48,7 +48,7 @@ const EditScientificArt = () => {
         const fetchOldData = async () => {
             // const userId = localStorage.getItem('userId');
             try {
-                const response = await axios.get(`http://localhost:3001/education/getDataArt/${artId}`);
+                const response = await axios.get(`http://localhost:3001/education/getDataArt/${artIdnp}`);
                 const data = response.data;
                 if (data.ngay) {
                     data.ngay = formatDate(data.ngay);
@@ -61,7 +61,7 @@ const EditScientificArt = () => {
         };
 
         fetchOldData();
-    }, [artId]);
+    }, [artIdnp]);
 
     const calculateStandardHours = useCallback(() => {
         let hours = 0;
