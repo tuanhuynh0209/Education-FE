@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SuccessDialog from '../Dialog/SuccessDialog';
 //  sử dụng localStorage để lưu msnv sau khi đăng nhập sau đó getItem khi thêm bài báo khoa học
 const EditScientificArt = () => {
-    const { sciArtId } = useParams();
+    const { artId } = useParams();
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     // Hàm đóng dialog và điều hướng
@@ -48,13 +48,12 @@ const EditScientificArt = () => {
         const fetchOldData = async () => {
             // const userId = localStorage.getItem('userId');
             try {
-                const response = await axios.get(`http://localhost:3001/education/getDataSciArt/${sciArtId}`);
+                const response = await axios.get(`http://localhost:3001/education/getDataArt/${artId}`);
                 const data = response.data;
-                // Kiểm tra và định dạng trường ngày tháng nếu cần
                 if (data.ngay) {
                     data.ngay = formatDate(data.ngay);
                 }
-                setFormData(data); // Điền dữ liệu cũ vào form
+                setFormData(data);
 
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -62,7 +61,7 @@ const EditScientificArt = () => {
         };
 
         fetchOldData();
-    }, [sciArtId]);
+    }, [artId]);
 
     const calculateStandardHours = useCallback(() => {
         let hours = 0;
@@ -117,8 +116,7 @@ const EditScientificArt = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/education/AddSciArt', formData);
-            console.log('Bài báo đã được thêm:', response.data);
+            await axios.post('http://localhost:3001/education/AddSciArt', formData);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Lỗi khi thêm bài báo:', error);
@@ -149,7 +147,9 @@ const EditScientificArt = () => {
                             <p className='font-medium text-lg'>Hoạt động</p>
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, hoat_dong: e.target.value })}>
+                            name='hoat_dong'
+                            value={formData.hoat_dong}
+                            onChange={handleInputChange}>
                             <option value="">Ấn vào để chọn</option>
                             <option value="1.Đăng trên tạp chí thuộc hệ thống ISI/Scopus">1.Đăng trên tạp chí thuộc hệ thống ISI/Scopus</option>
                             <option value="2.Đăng trong kỷ yếu hội thảo quốc tế có phản biện và xuất bản bằng tiếng Anh hoặc tiếng Pháp">2.Đăng trong kỷ yếu hội thảo quốc tế có phản biện và xuất bản bằng tiếng Anh hoặc tiếng Pháp</option>
@@ -165,7 +165,9 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="text"
-                            onChange={(e) => setFormData({ ...formData, ten_bai_bao: e.target.value })}
+                            name='ten_bai_bao'
+                            value={formData.ten_bai_bao}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập tên bài báo" />
                     </div>
@@ -177,7 +179,9 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="text"
-                            onChange={(e) => setFormData({ ...formData, doi: e.target.value })}
+                            name='doi'
+                            value={formData.doi}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập DOI hoặc minh chứng bài báo" />
                     </div>
@@ -189,7 +193,9 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="date"
-                            onChange={(e) => setFormData({ ...formData, ngay: e.target.value })}
+                            name='ngay'
+                            value={formData.ngay}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300" />
                     </div>
 
@@ -200,7 +206,9 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="text"
-                            onChange={(e) => setFormData({ ...formData, ten_tap_chi: e.target.value })}
+                            name='ten_tap_chi'
+                            value={formData.ten_tap_chi}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập tên tạp chí, kỷ yếu" />
                     </div>
@@ -212,7 +220,9 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="text"
-                            onChange={(e) => setFormData({ ...formData, ten_nha_xuat_ban: e.target.value })}
+                            name='ten_nha_xuat_ban'
+                            value={formData.ten_nha_xuat_ban}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập tên nhà xuất bản" />
                     </div>
@@ -223,7 +233,9 @@ const EditScientificArt = () => {
                             <p className='font-medium text-lg'>Ngôn ngữ xuất bản</p>
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, ngon_ngu: e.target.value })}>
+                             name='ngon_ngu'
+                             value={formData.ngon_ngu}
+                             onChange={handleInputChange}>
                             <option value="">Ấn vào để chọn</option>
                             <option value="Tiếng Việt">Tiếng Việt</option>
                             <option value="Tiếng Anh">Tiếng Anh</option>
@@ -237,7 +249,9 @@ const EditScientificArt = () => {
                             <p className='font-medium text-lg'>Phạm vi, cấp độ</p>
                         </div>
                         <select className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, pham_vi_cap_do: e.target.value })}>
+                             name='pham_vi_cap_do'
+                             value={formData.pham_vi_cap_do}
+                             onChange={handleInputChange}>
                             <option value="">Ấn vào để chọn</option>
                             <option value="Chưa có chỉ số ảnh hưởng (Impact Factor – IF) hoặc IF ≤ 0.5">Chưa có chỉ số ảnh hưởng (Impact Factor – IF) hoặc IF ≤ 0.5</option>
                             <option value="Có chỉ số ảnh hưởng IF &gt; 0.5 (tính theo năm kê khai)">Có chỉ số ảnh hưởng IF &gt; 0.5 (tính theo năm kê khai)</option>
@@ -254,7 +268,9 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="number"
-                            onChange={(e) => setFormData({ ...formData, impact_factor: e.target.value })}
+                            name='impact_factor'
+                            value={formData.impact_factor}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập IF (nếu có)"
                         />
@@ -267,6 +283,7 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="number"
+                            name='gio_chuan_hoat_dong'
                             value={formData.gio_chuan_hoat_dong}
                             readOnly
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
@@ -279,7 +296,9 @@ const EditScientificArt = () => {
                         </div>
                         <select
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
-                            onChange={(e) => setFormData({ ...formData, vai_tro: e.target.value })}
+                            name='vai_tro'
+                            value={formData.vai_tro}
+                            onChange={handleInputChange}
                         >
                             <option value="">Ấn vào để chọn</option>
                             <option value="Tác giả đầu tiên">Tác giả đầu tiên</option>
@@ -296,7 +315,9 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="number"
-                            onChange={(e) => setFormData({ ...formData, tong_so_thanh_vien: e.target.value })}
+                            name='tong_so_thanh_vien'
+                            value={formData.tong_so_thanh_vien}
+                            onChange={handleInputChange}
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                         />
                     </div>
@@ -310,7 +331,9 @@ const EditScientificArt = () => {
                             type="number"
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                             placeholder="Nhập tổng số tác giả"
-                            onChange={(e) => setFormData({ ...formData, tong_so_tac_gia: e.target.value })}
+                            name='tong_so_tac_gia'
+                            value={formData.tong_so_tac_gia}
+                            onChange={handleInputChange}
                         />
                     </div>
 
@@ -320,7 +343,8 @@ const EditScientificArt = () => {
                             <p className="font-medium text-lg">Tỉ lệ đóng góp (%)</p>
                         </div>
                         <input
-                            type="number"
+                            type="text"
+                            name='ty_le_dong_gop'
                             value={(formData.ty_le_dong_gop * 100).toFixed(0) + '%'}
                             readOnly
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
@@ -332,6 +356,7 @@ const EditScientificArt = () => {
                         </div>
                         <input
                             type="number"
+                            name='gio_quy_doi'
                             value={formData.gio_quy_doi}
                             readOnly
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"

@@ -31,6 +31,8 @@ import EditScientificCfs from '../pageEdit/EditScientificCfs';
 import EditScientificReport from '../pageEdit/EditScientificReport';
 import EditScientificResPro from '../pageEdit/EditScientificResPro';
 import EditSciResCou from '../pageEdit/EditSciResCou';
+import EditScientificResTpc from '../pageEdit/EditScientificResTpc';
+import EditScientificArt from '../pageEdit/EditScientificArt';
 
 const Router = () => {
   return (
@@ -48,8 +50,10 @@ const Router = () => {
         <Route path='/func/information/editInf/:userId' element={<EditInformation/>}/>
         <Route path='/func/scientificArticle' element={<ScientificArticle/>}/>
         <Route path='/func/scientificArticle/addSciArt' element={<AddScientificArt/>}/>
+        <Route path='/func/scientificArticle/editSciArt/:artId' element={<EditScientificArt/>}/>
         <Route path='/func/scientificResearchTopic' element={<ScientificResearchTopic/>}/>
         <Route path='/func/scientificResearchTopic/addSciResTpc' element={<AddScientificResTpc/>}/>
+        <Route path='/func/scientificResearchTopic/editSciResTpc/:tpcId' element={<EditScientificResTpc/>}/>
         <Route path='/func/scientificResearchCouncil' element={<ScientificResearchCouncil/>}/>
         <Route path='/func/scientificResearchCouncil/addSciResCou' element={<AddSciResCou/>}/>
         <Route path='/func/scientificResearchCouncil/editSciResCou/:couId' element={<EditSciResCou/>}/>

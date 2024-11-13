@@ -3,14 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
-
+import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
+import DeleteIcon from '@mui/icons-material/Delete';
 const ScientificResearchTopic = () => {
 
   const navigate = useNavigate();
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [topics, setTopics] = useState([]);
-
-  const fetchEmployeeName = async(msnv) => {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const fetchEmployeeName = async (msnv) => {
     try {
       const response = await axios.get(`http://localhost:3001/education/users/${msnv}`);
       return response.data.ho_ten;
@@ -18,24 +19,68 @@ const ScientificResearchTopic = () => {
       console.error(err);
     }
   }
-
+  // check tk admin
   useEffect(() => {
-    const fetchTopic = async() => {
+    const fetchUserRole = () => {
+      const userId = localStorage.getItem('userId');
+      // Kiểm tra nếu username là admin
+      setIsAdmin(userId === "admin123");
+    };
+
+    fetchUserRole();
+  }, []);
+
+  // hàm check user - admin để hiển thị list tương ứng
+  useEffect(() => {
+    const fetchUserRoleAndData = async () => {
+      const userId = localStorage.getItem('userId');
+      const isAdminUser = userId === "admin123";
+      setIsAdmin(isAdminUser);
+
+      // Fetch users based on role
       try {
-        const response = await axios.get("http://localhost:3001/education/getAllTopics");
-        const topicWName = await Promise.all(response.data.map(async(tpc) => {
-          const employeeName = await fetchEmployeeName(tpc.msnv);
-          return {...tpc, ho_ten: employeeName};
-        }));
-        setTopics(topicWName);
+        if (isAdminUser) {
+          const response = await axios.get("http://localhost:3001/education/getAllTopics");
+          const topicWName = await Promise.all(response.data.map(async (tpc) => {
+            const employeeName = await fetchEmployeeName(tpc.msnv);
+            return { ...tpc, ho_ten: employeeName };
+          }));
+          setTopics(topicWName);
+        } else {
+          const response = await axios.get(`http://localhost:3001/education/getTpcOfUser/${userId}`);
+          const topicWName = await Promise.all(response.data.map(async (tpc) => {
+            const employeeName = await fetchEmployeeName(tpc.msnv);
+            return { ...tpc, ho_ten: employeeName };
+          }));
+          setTopics(topicWName);
+        }
       } catch (err) {
         console.error(err);
       }
     };
-    fetchTopic();
-  },[])
+
+    fetchUserRoleAndData();
+  }, []);
+
+  // hàm xóa tài liệu
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Bạn chắc chắn muốn xóa bài đăng này?");
+    if (confirmDelete) {
+      try {
+        await axios.delete(`http://localhost:3001/education/deleteSciTpc/${id}`);
+        setTopics(topics.filter(tpc => tpc.ma_de_tai !== id));
+        alert("Topic deleted successfully");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
   const handleAddClick = () => {
     navigate('/func/scientificResearchTopic/addSciResTpc');
+  };
+  const handleEditClick = (tpcId) => {
+    navigate(`/func/scientificResearchTopic/editSciResTpc/${tpcId}`);
   };
   const toggleExpand = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
@@ -58,9 +103,11 @@ const ScientificResearchTopic = () => {
               <th className="p-2">STT</th>
               <th className="p-2">Họ và tên</th>
               <th className="p-2">Mã số nhân viên</th>
-              <th className="p-2">Hoạt động</th>
+              <th className="p-2">Mã nghiên cứu đề tài</th>
               <th className="p-2">Tên đề tài/ đề cương NCKH</th>
-              <th className="p-2"></th>
+              <th className="p-2">Chỉnh sửa</th>
+              <th className="p-2">Xóa</th>
+              <th className="p-2">Mở rộng</th>
             </tr>
           </thead>
           <tbody>
@@ -70,8 +117,19 @@ const ScientificResearchTopic = () => {
                   <td className="p-2">{index + 1}</td>
                   <td className="p-2">{scientificResTpc.ho_ten}</td>
                   <td className="p-2">{scientificResTpc.msnv}</td>
-                  <td className="p-2">{scientificResTpc.hoat_dong}</td>
+                  <td className="p-2">{scientificResTpc.ma_de_tai}</td>
                   <td className="p-2">{scientificResTpc.ten_de_tai}</td>
+                  <td>
+                    <button onClick={() => handleEditClick(scientificResTpc.ma_de_tai)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                      <ModeEditOutlineOutlinedIcon className='text-white' />
+                    </button>
+                  </td>
+
+                  <td className="p-2">
+                    <button onClick={() => handleDelete(scientificResTpc.ma_de_tai)} className="bg-red-600 text-white p-2 rounded">
+                      <DeleteIcon />
+                    </button>
+                  </td>
                   <td className="p-2">
                     <button onClick={() => toggleExpand(index)}>
                       {expandedIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
@@ -80,10 +138,14 @@ const ScientificResearchTopic = () => {
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
 
-                <td className="p-4" colSpan="5">
+                  <td className="p-4" colSpan="7">
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">
                         <tbody>
+                        <tr className="py-2">
+                            <td className="font-semibold text-gray-700 w-1/2 py-2">Hoạt động</td>
+                            <td className="text-gray-600 py-2">{scientificResTpc.hoat_dong}</td>
+                          </tr>
                           <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Phạm vi, cấp độ</td>
                             <td className="text-gray-600 py-2">{scientificResTpc.pham_vi_cap_do}</td>

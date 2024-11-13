@@ -122,8 +122,7 @@ const AddScientificResTpc = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/education/AddSciResTpt', formData);
-            console.log('Nghiên cứu đề tài đã được thêm:', response.data);
+            await axios.post('http://localhost:3001/education/AddSciResTpt', formData);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Lỗi khi thêm Nghiên cứu đề tài:', error);

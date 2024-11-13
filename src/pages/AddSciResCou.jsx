@@ -56,8 +56,7 @@ const AddSciResCou = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/education/AddSciResCou', formData);
-            console.log('Đã được thêm:', response.data);
+            await axios.post('http://localhost:3001/education/AddSciResCou', formData);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Lỗi khi thêm:', error);

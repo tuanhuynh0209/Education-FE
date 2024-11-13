@@ -89,18 +89,10 @@ const AddScientificArt = () => {
         setFormData(prevData => ({ ...prevData, gio_quy_doi: calculatedRoleConversionHours }));
     }, [formData.gio_chuan_hoat_dong, formData.ty_le_dong_gop, calculateRoleConversionHours]);
 
-    // Cập nhật khi dữ liệu thay đổi
-    useEffect(() => {
-        calculateStandardHours();
-        calculateContributionPercentage();
-        calculateRoleConversionHours();
-    }, [calculateStandardHours, calculateContributionPercentage, calculateRoleConversionHours]);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/education/AddSciArt', formData);
-            console.log('Bài báo đã được thêm:', response.data);
+            await axios.post('http://localhost:3001/education/AddSciArt', formData);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Lỗi khi thêm bài báo:', error);
@@ -302,8 +294,8 @@ const AddScientificArt = () => {
                             <p className="font-medium text-lg">Tỉ lệ đóng góp (%)</p>
                         </div>
                         <input
-                            type="number"
-                            value={(formData.ty_le_dong_gop * 100).toFixed(0) + '%'}
+                            type="text"
+                            value={(formData.ty_le_dong_gop * 100) + '%'}
                             readOnly
                             className="bg-slate-100 rounded-lg p-4 outline-none border border-gray-300"
                         />
