@@ -27,6 +27,7 @@ const navLinks = [
 
 
 const MainPage = () => {
+    
     return (
         <div>
             {/* Header section */}
@@ -40,7 +41,7 @@ const MainPage = () => {
                 <div className="relative z-10 text-center text-white">
                     <p className="text-6xl font-bold">Quản lý đào tạo và nghiên cứu khoa học</p>
                     <p className="mt-2">
-                        Tin nổi bật: NGUYỄN ANH LỮ: Sáng kiến cải tiến thiết bị Y khoa hỗ trợ nhận diện u bướu...
+                        Bệnh viện Đại Học Y Dược TP Hồ Chí Minh - Cơ Sở 2
                     </p>
                 </div>
             </header>
@@ -58,7 +59,6 @@ const MainPage = () => {
             <div className="flex flex-col md:flex-row ">
                 {/* Left side - Sidebar */}
                 <aside className="w-full md:w-1/3 lg:w-1/4 p-4 bg-[#FDE4CC] rounded-r-3xl">
-
 
                     <ul className="nav__list space-y-4">
                         {navLinks.map((item, index) => {

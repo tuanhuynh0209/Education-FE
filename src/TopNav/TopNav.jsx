@@ -10,6 +10,8 @@ const TopNav = () => {
     });
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState('');
 
     const handleChange = (e) => {
         setFormData({
@@ -50,7 +52,11 @@ const TopNav = () => {
             setSuccessMessage('Đăng nhập thành công!');
             setErrorMessage('');
             const userId = response.data.msnv;
+            const userName = response.data.ho_ten;
             localStorage.setItem('userId', userId);
+            localStorage.setItem('username', userName);
+            setIsLoggedIn(true);
+            setUsername(userName);
             console.log(userId);
             setFormData({
                 msnv: '',
@@ -69,6 +75,21 @@ const TopNav = () => {
             setSuccessMessage('');
         }
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('username');
+        setIsLoggedIn(false);
+        setUsername('');
+    };
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        if (storedUsername) {
+            setIsLoggedIn(true);
+            setUsername(storedUsername);
+        }
+    }, []);
 
     const [isScrolled, setIsScrolled] = useState(false);
     const [showDialog, setShowDialog] = useState({ login: false, register: false });
@@ -109,8 +130,17 @@ const TopNav = () => {
                     <NavLink to="/contact" className={`text-lg font-semibold hover:text-gray-500 transition duration-300 ${isScrolled ? 'text-gray-800' : 'text-white'}`}>Liên hệ</NavLink>
                 </div>
                 <div className="flex space-x-5">
-                    <button onClick={() => handleDialogOpen('register')} className={`border-2 py-2 px-6 rounded-full font-semibold transition duration-300 ${isScrolled ? 'border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white' : 'border-white text-white hover:bg-white hover:text-indigo-600'}`}>Đăng ký</button>
-                    <button onClick={() => handleDialogOpen('login')} className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-2 px-6 rounded-full font-semibold hover:from-orange-600 hover:to-yellow-600 transition duration-300">Đăng nhập</button>
+                    {isLoggedIn ? (
+                        <div className="flex items-center space-x-4">
+                            <span className={`text-lg font-semibold ${isScrolled ? 'text-gray-800' : 'text-white'}`}>Xin chào, {username}</span>
+                            <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-6 rounded-full font-semibold hover:bg-red-600 transition duration-300">Đăng xuất</button>
+                        </div>
+                    ) : (
+                        <>
+                            <button onClick={() => handleDialogOpen('register')} className={`border-2 py-2 px-6 rounded-full font-semibold transition duration-300 ${isScrolled ? 'border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white' : 'border-white text-white hover:bg-white hover:text-indigo-600'}`}>Đăng ký</button>
+                            <button onClick={() => handleDialogOpen('login')} className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-2 px-6 rounded-full font-semibold hover:from-orange-600 hover:to-yellow-600 transition duration-300">Đăng nhập</button>
+                        </>
+                    )}
                 </div>
             </nav>
 
