@@ -1,48 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
 
-const TopNav = () => {
-    const [formData, setFormData] = useState({
-        msnv: '',
-        ho_ten: '',
-        mat_khau: '',
-    });
+const AuthPage = () => {
+    const [showDialog, setShowDialog] = useState({ login: false, register: false });
+    const [formData, setFormData] = useState({ msnv: '', mat_khau: '', ho_ten: '' });
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [username, setUsername] = useState('');
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+    const handleDialogOpen = (type) => {
+        setShowDialog({ login: type === 'login', register: type === 'register' });
     };
 
-    const handleSubmitRegister = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post('http://localhost:3001/education/register', formData);
-            setSuccessMessage('Đăng ký thành công!');
-            setErrorMessage('');
-            setFormData({
-                msnv: '',
-                ho_ten: '',
-                mat_khau: '',
-            });
-            setTimeout(() => {
-                handleDialogClose();
-                setSuccessMessage('');
-            }, 1500);
-        } catch (error) {
-            if (error.response && error.response.status === 400) {
-                setErrorMessage('Người dùng đã tồn tại');
-            } else {
-                setErrorMessage('Lỗi khi đăng ký người dùng');
-            }
-            setSuccessMessage('');
-        }
+    const handleDialogClose = () => {
+        setShowDialog({ login: false, register: false });
+        setFormData({ msnv: '', mat_khau: '', ho_ten: '' });
+        setErrorMessage('');
+        setSuccessMessage('');
+    };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmitLogin = async (e) => {
@@ -76,75 +52,36 @@ const TopNav = () => {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('userId');
-        localStorage.removeItem('username');
-        setIsLoggedIn(false);
-        setUsername('');
-    };
-
-    useEffect(() => {
-        const storedUsername = localStorage.getItem('username');
-        if (storedUsername) {
-            setIsLoggedIn(true);
-            setUsername(storedUsername);
-        }
-    }, []);
-
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [showDialog, setShowDialog] = useState({ login: false, register: false });
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 40) {
-                setIsScrolled(true);
+    const handleSubmitRegister = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post('http://localhost:3001/education/register', formData);
+            setSuccessMessage('Đăng ký thành công!');
+            setErrorMessage('');
+            setFormData({
+                msnv: '',
+                ho_ten: '',
+                mat_khau: '',
+            });
+            setTimeout(() => {
+                handleDialogClose();
+                setSuccessMessage('');
+            }, 1500);
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                setErrorMessage('Người dùng đã tồn tại');
             } else {
-                setIsScrolled(false);
+                setErrorMessage('Lỗi khi đăng ký người dùng');
             }
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-    // mở
-    const handleDialogOpen = (type) => {
-        if (type === 'login') {
-            setShowDialog({ login: true, register: false });
-        } else {
-            setShowDialog({ login: false, register: true });
+            setSuccessMessage('');
         }
     };
-    // đóng dialog
-    const handleDialogClose = () => {
-        setShowDialog({ login: false, register: false });
-    };
-
     return (
-        <div className="relative">
-            <nav className={`fixed w-full transition-all duration-500 top-0 z-20 px-10 py-4 flex justify-between items-center shadow-lg ${isScrolled ? 'backdrop-blur-md bg-white/50 border-b border-gray-200 text-gray-800' : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 text-white'}`}>
-                <div className="flex items-center space-x-10">
-                    <img src="https://bvdaihoccoso2.com.vn/uploads/config/footer-logo-370x90.jpg" alt="Logo" className="h-12" />
-                    <NavLink to="/home" className={`text-lg font-semibold hover:text-gray-500 transition duration-300 ${isScrolled ? 'text-gray-800' : 'text-white'}`}>Trang chủ</NavLink>
-                    <NavLink to="/search" className={`text-lg font-semibold hover:text-gray-500 transition duration-300 ${isScrolled ? 'text-gray-800' : 'text-white'}`}>Tìm kiếm</NavLink>
-                    <NavLink to="/information" className={`text-lg font-semibold hover:text-gray-500 transition duration-300 ${isScrolled ? 'text-gray-800' : 'text-white'}`}>Giới thiệu</NavLink>
-                    <NavLink to="/contact" className={`text-lg font-semibold hover:text-gray-500 transition duration-300 ${isScrolled ? 'text-gray-800' : 'text-white'}`}>Liên hệ</NavLink>
-                </div>
-                <div className="flex space-x-5">
-                    {isLoggedIn ? (
-                        <div className="flex items-center space-x-4">
-                            <span className={`text-lg font-semibold ${isScrolled ? 'text-gray-800' : 'text-white'}`}>Xin chào, {username}</span>
-                            <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-6 rounded-full font-semibold hover:bg-red-600 transition duration-300">Đăng xuất</button>
-                        </div>
-                    ) : (
-                        <>
-                            <button onClick={() => handleDialogOpen('register')} className={`border-2 py-2 px-6 rounded-full font-semibold transition duration-300 ${isScrolled ? 'border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white' : 'border-white text-white hover:bg-white hover:text-indigo-600'}`}>Đăng ký</button>
-                            <button onClick={() => handleDialogOpen('login')} className="bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-2 px-6 rounded-full font-semibold hover:from-orange-600 hover:to-yellow-600 transition duration-300">Đăng nhập</button>
-                        </>
-                    )}
-                </div>
-            </nav>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+            <button onClick={() => handleDialogOpen('login')} className="bg-indigo-600 text-white px-4 py-2 rounded-md mb-4">Đăng nhập</button>
+            <button onClick={() => handleDialogOpen('register')} className="bg-orange-500 text-white px-4 py-2 rounded-md">Đăng ký</button>
 
+            {/* Hộp thoại Đăng nhập */}
             {showDialog.login && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                     <div className="bg-white p-8 rounded-2xl shadow-xl w-96 relative transition-transform transform scale-100 duration-300">
@@ -158,7 +95,8 @@ const TopNav = () => {
                                 onChange={handleChange}
                                 required
                                 placeholder="Mã nhân viên"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300" />
+                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                            />
                             <input
                                 type="password"
                                 name='mat_khau'
@@ -166,7 +104,8 @@ const TopNav = () => {
                                 onChange={handleChange}
                                 required
                                 placeholder="Mật khẩu"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300" />
+                                className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300"
+                            />
                             <button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-md hover:bg-gradient-to-l hover:from-indigo-700 hover:to-purple-700 transition duration-300">Đăng nhập</button>
                         </form>
                         {errorMessage && (
@@ -180,6 +119,7 @@ const TopNav = () => {
                 </div>
             )}
 
+            {/* Hộp thoại Đăng ký */}
             {showDialog.register && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-30">
                     <div className="bg-white p-8 rounded-2xl shadow-xl w-96 relative transition-transform transform scale-100 duration-300">
@@ -191,7 +131,7 @@ const TopNav = () => {
                                 name="msnv"
                                 value={formData.msnv}
                                 onChange={handleChange}
-                                placeholder="MSNV"
+                                placeholder="Mã nhân viên"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300"
                                 required
                             />
@@ -217,7 +157,6 @@ const TopNav = () => {
                                 Đăng ký
                             </button>
                         </form>
-
                         {errorMessage && (
                             <p className="text-red-500 mt-4 text-center">{errorMessage}</p>
                         )}
@@ -232,4 +171,4 @@ const TopNav = () => {
     );
 };
 
-export default TopNav;
+export default AuthPage;

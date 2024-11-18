@@ -104,8 +104,7 @@ const AddDocument = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3001/education/AddDoc', formData);
-            console.log('Tài liệu đã được thêm:', response.data);
+            await axios.post('http://localhost:3001/education/AddDoc', formData);
             setOpen(true);  // Hiển thị dialog khi thêm thành công
         } catch (error) {
             console.error('Lỗi khi thêm tài liệu:', error);

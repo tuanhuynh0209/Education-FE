@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import SuccessDialog from '../Dialog/SuccessDialog';
 //  sử dụng localStorage để lưu msnv sau khi đăng nhập sau đó getItem khi thêm bài báo khoa học
 const EditScientificArt = () => {
-    const { artIdnp } = useParams();
+    const { artId } = useParams();
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     // Hàm đóng dialog và điều hướng
@@ -48,7 +48,7 @@ const EditScientificArt = () => {
         const fetchOldData = async () => {
             // const userId = localStorage.getItem('userId');
             try {
-                const response = await axios.get(`http://localhost:3001/education/getDataArt/${artIdnp}`);
+                const response = await axios.get(`http://localhost:3001/education/getDataArt/${artId}`);
                 const data = response.data;
                 if (data.ngay) {
                     data.ngay = formatDate(data.ngay);
@@ -61,7 +61,7 @@ const EditScientificArt = () => {
         };
 
         fetchOldData();
-    }, [artIdnp]);
+    }, [artId]);
 
     const calculateStandardHours = useCallback(() => {
         let hours = 0;
@@ -113,15 +113,16 @@ const EditScientificArt = () => {
         setFormData(prevData => ({ ...prevData, gio_quy_doi: calculatedRoleConversionHours }));
     }, [formData.gio_chuan_hoat_dong, formData.ty_le_dong_gop, calculateRoleConversionHours]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post('http://localhost:3001/education/AddSciArt', formData);
-            setOpen(true);  // Hiển thị dialog khi thêm thành công
-        } catch (error) {
-            console.error('Lỗi khi thêm bài báo:', error);
-        }
-    };
+   // Hàm call api chỉnh sửa bài báo khhoa học
+   const handleSubmit = async(e) => {
+    e.preventDefault();
+    try {
+        await axios.put(`http://localhost:3001/education/editDataArt/${artId}`, formData);
+        setOpen(true);  // Hiển thị dialog khi thêm thành công
+    } catch (err) {
+        console.error('Lỗi khi thêm sáng kiến:', err)
+    }
+}
     return (
         <div className='mx-8 w-full'>
             <div className='w-full'>

@@ -141,7 +141,6 @@ const ScientificArticle = () => {
                   </td>
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
-
                   <td className="p-4" colSpan="7">
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">

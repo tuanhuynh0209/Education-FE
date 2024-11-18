@@ -33,12 +33,14 @@ import EditScientificResPro from '../pageEdit/EditScientificResPro';
 import EditSciResCou from '../pageEdit/EditSciResCou';
 import EditScientificResTpc from '../pageEdit/EditScientificResTpc';
 import EditScientificArt from '../pageEdit/EditScientificArt';
+import Search from '../NavPage/Search';
 
 const Router = () => {
   return (
     <Routes>
       {/* topnav */}
       <Route path='/home' element={<HomePage />} />
+      <Route path='/search' element={<Search/>} />
       <Route path='/introduce' element={<Introduce />} />
       <Route path='/contact' element={<Contact />} />
       <Route path='/' element={<HomePage />} />

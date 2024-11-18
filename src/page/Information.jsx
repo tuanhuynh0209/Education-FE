@@ -93,7 +93,6 @@ const Information = () => {
                   <td className="p-2">{user.msnv}</td>
                   <td className="p-2">{user.co_so || "Chưa cập nhật"}</td>
                   <td className="p-2">{user.don_vi || "Chưa cập nhật"}</td>
-
                   <td>
                     <button onClick={() => handleEditClick(user.msnv)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
                       <ModeEditOutlineOutlinedIcon className='text-white' />

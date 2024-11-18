@@ -46,15 +46,6 @@ const MainPage = () => {
                 </div>
             </header>
 
-            <div className="p-3 flex justify-end text-center">
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm..."
-                    className="bg-[#F9A150] rounded-lg p-3.5 outline-none mb-4 text-white"
-                />
-
-            </div>
-
             {/* Main content */}
             <div className="flex flex-col md:flex-row ">
                 {/* Left side - Sidebar */}
