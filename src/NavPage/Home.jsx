@@ -24,7 +24,7 @@ const Home = () => {
     { title: "Tham dự hội nghị khoa học", icon: TGHNKH, link: "/func/scientificConferences" },
     { title: "Sản phẩm KHCN", icon: SPKHCN, link: "/func/scientificResearchProduct" },
     { title: "Sáng kiến, cải tiến", icon: SKCT, link: "/func/initiative" },
-    { title: "Bảng thống kê đào tạo", icon: BTKDT, link: "/func/statistic" }
+    // { title: "Bảng thống kê đào tạo", icon: BTKDT, link: "/func/statistic" }
   ];
   return (
     <>

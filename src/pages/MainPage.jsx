@@ -22,7 +22,7 @@ const navLinks = [
     { path: "/func/scientificConferences", icon: TGHNKH, display: "Tham dự hội nghị khoa học" },
     { path: "/func/scientificResearchProduct", icon: SPKHCN, display: "Sản phẩm KHCN" },
     { path: "/func/initiative", icon: SKCT, display: "Sáng kiến, cải tiến" },
-    { path: "/func/statistic", icon: BTKDT, display: "BTK đào tạo y khoa" },
+    // { path: "/func/statistic", icon: BTKDT, display: "BTK đào tạo y khoa" },
 ];
 
 

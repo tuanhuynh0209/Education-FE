@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ArrowDropDownOutlined, ArrowDropUpOutlined } from "@mui/icons-material";
 import DetailTable from '../component/DetailTable';
@@ -40,6 +40,11 @@ const Search = () => {
     const handleEditUserClick = (userId) => {
         navigate(`/func/information/editInf/${userId}`);
     };
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    useEffect(() => {
+        const userId = localStorage.getItem("userId");
+        setIsLoggedIn(!!userId); // Kiểm tra trạng thái đăng nhập
+    }, []);
     const userColumns = [
         { label: "Chức danh, trình độ", key: "chuc_danh_trinh_do" },
         { label: "Viên chức cơ hữu", key: "vien_chuc_co_huu" },
@@ -80,32 +85,35 @@ const Search = () => {
         { label: "Tỷ lệ đóng góp", key: "ty_le_dong_gop" },
         { label: "Giờ quy đổi", key: "gio_quy_doi" },
     ];
+
     return (
-        <div className="p-8">
+        <div className="p-8 mt-24">
             <h1 className="text-2xl font-bold mb-6">Tìm kiếm thông tin</h1>
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-                <input
-                    type="text"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="Nhập từ khóa tìm kiếm"
-                    className="border border-gray-300 rounded-lg p-2 flex-1 w-full sm:w-auto"
-                />
-                <select
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                    className="border border-gray-300 rounded-lg p-2"
-                >
-                    <option value="msnv">Tìm theo mã nhân viên</option>
-                    <option value="ma">Tìm theo mã bảng</option>
-                </select>
-                <button
-                    onClick={handleSearch}
-                    className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600"
-                >
-                    Tìm kiếm
-                </button>
-            </div>
+            {isLoggedIn && (
+                <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+                    <input
+                        type="text"
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                        placeholder="Nhập từ khóa tìm kiếm"
+                        className="border border-gray-300 rounded-lg p-2 flex-1 w-full sm:w-auto"
+                    />
+                    <select
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                        className="border border-gray-300 rounded-lg p-2"
+                    >
+                        <option value="msnv">Tìm theo mã nhân viên</option>
+                        <option value="ma">Tìm theo mã bảng</option>
+                    </select>
+                    <button
+                        onClick={handleSearch}
+                        className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600"
+                    >
+                        Tìm kiếm
+                    </button>
+                </div>
+            )}
 
             {result && (
                 <div className="mt-8">

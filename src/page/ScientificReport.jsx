@@ -88,18 +88,28 @@ const ScientificReport = () => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setIsLoggedIn(!!userId); // Kiểm tra trạng thái đăng nhập
+  }, []);
+
   return (
-    <div className='mx-8 bg-orange-400 w-full'>
-      <div className='bg-slate-400 w-full relative p-2'>
-        <span className='text-3xl font-semibold text-white block text-center break-words pr-20'>
+    <div className="mx-8 bg-orange-400 w-full">
+      <div className="bg-slate-400 w-full relative p-2">
+        <span className="text-3xl font-semibold text-white block text-center break-words pr-20">
           BÁO CÁO KHOA HỌC DẠNG BÀI FULLTEXT TẠI HỘI NGHỊ, HỘI THẢO SINH HOẠT CHUYÊN MÔN
         </span>
-        <button onClick={handleAddClick} className='absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
-          <span>Thêm</span>
-          <LibraryAddOutlinedIcon className='text-white' />
-        </button>
+        {isLoggedIn && (
+          <button
+            onClick={handleAddClick}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
+          >
+            <span>Thêm</span>
+            <LibraryAddOutlinedIcon className="text-white" />
+          </button>
+        )}
       </div>
-
       <div className="bg-slate-300 w-full mt-5">
         <table className="table-auto w-full text-center" style={{ tableLayout: 'fixed' }}>
           <thead>

@@ -86,14 +86,27 @@ const ScientificResearchTopic = () => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const userId = localStorage.getItem("userId");
+    setIsLoggedIn(!!userId); // Kiểm tra trạng thái đăng nhập
+  }, []);
+
   return (
-    <div className='mx-8 bg-orange-400 w-full'>
-      <div className='bg-slate-400 w-full relative flex items-center justify-center p-2'>
-        <span className='text-3xl font-semibold text-white'>ĐỀ TÀI NGHIÊN CỨU KHOA HỌC</span>
-        <button onClick={handleAddClick} className='absolute right-4 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
-          <span>Thêm</span>
-          <LibraryAddOutlinedIcon className='text-white' />
-        </button>
+    <div className="mx-8 bg-orange-400 w-full">
+      <div className="bg-slate-400 w-full relative p-2">
+        <span className="text-3xl font-semibold text-white block text-center break-words pr-20">
+          ĐỀ TÀI NGHIÊN CỨU KHOA HỌC
+        </span>
+        {isLoggedIn && (
+          <button
+            onClick={handleAddClick}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
+          >
+            <span>Thêm</span>
+            <LibraryAddOutlinedIcon className="text-white" />
+          </button>
+        )}
       </div>
 
       <div className="bg-slate-300 w-full mt-5">
@@ -142,7 +155,7 @@ const ScientificResearchTopic = () => {
                     <div className="bg-gray-100 rounded-lg shadow-lg p-6">
                       <table className="table-auto w-full text-left">
                         <tbody>
-                        <tr className="py-2">
+                          <tr className="py-2">
                             <td className="font-semibold text-gray-700 w-1/2 py-2">Hoạt động</td>
                             <td className="text-gray-600 py-2">{scientificResTpc.hoat_dong}</td>
                           </tr>
