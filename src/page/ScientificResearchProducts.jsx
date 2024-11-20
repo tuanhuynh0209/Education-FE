@@ -5,7 +5,7 @@ import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import * as XLSX from 'xlsx';
 const ScientificResearchProducts = () => {
 
   const navigate = useNavigate();
@@ -92,6 +92,58 @@ const ScientificResearchProducts = () => {
     const userId = localStorage.getItem("userId");
     setIsLoggedIn(!!userId); // Kiểm tra trạng thái đăng nhập
   }, []);
+  const handleExport = () => {
+    if (product.length === 0) {
+      alert("Không có dữ liệu để export!");
+      return;
+    }
+    // Chuẩn bị dữ liệu cho file Excel
+    const formattedData = product.map((prod, index) => ({
+      STT: index + 1,
+      "Họ và Tên": prod.ho_ten,
+      "Mã số nhân viên": prod.msnv,
+      "Mã sản phẩm": prod.ma_san_pham,
+      "Đơn vị cấp chứng nhận": prod.don_vi_cap_chung_nhan,
+      "Hoạt động": prod.hoat_dong || "Chưa cập nhật",
+      "Tên sản phẩm": prod.ten_san_pham || "Chưa cập nhật",
+      "Minh chứng": prod.minh_chung || "Chưa cập nhật",
+      "Phạm vi": prod.pham_vi || "Chưa cập nhật",
+      "Ngày": prod.ngay || "Chưa cập nhật",
+      "Giờ chuẩn hoạt động": prod.gio_chuan_hoat_dong || "Chưa cập nhật",
+      "Tỷ lệ đóng góp": prod.ty_le_dong_gop || "Chưa cập nhật",
+      "Giờ quy đổi": prod.gio_quy_doi || "Chưa cập nhật",
+    }));
+
+    // Tạo một worksheet và workbook
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Scientific Conferences");
+
+    // Xuất file Excel
+    XLSX.writeFile(workbook, "ScientificConferences.xlsx");
+  };
+  const handlePrint = () => {
+    // Lọc hoặc chuẩn bị nội dung cần in
+    const printContent = document.getElementById("printableArea");
+    const newWindow = window.open("", "_blank");
+    newWindow.document.write(`
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid black; padding: 8px; text-align: center; }
+                th { background-color: #f2f2f2; }
+            </style>
+        </head>
+        <body>
+            ${printContent.innerHTML}
+        </body>
+        </html>
+    `);
+    newWindow.document.close();
+    newWindow.print();
+  };
   return (
     <div className="mx-8 bg-orange-400 w-full">
       <div className="bg-slate-400 w-full relative p-2">
@@ -99,16 +151,29 @@ const ScientificResearchProducts = () => {
           ĐĂNG KÝ SỞ HỮU TRÍ TUỆ, TRIỂN LÃM SẢN PHẨM KHOA HỌC CÔNG NGHỆ
         </span>
         {isLoggedIn && (
-          <button
-            onClick={handleAddClick}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
-          >
-            <span>Thêm</span>
-            <LibraryAddOutlinedIcon className="text-white" />
-          </button>
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-4">
+            <button
+              onClick={handleAddClick}
+              className="flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
+            >
+              <LibraryAddOutlinedIcon className="text-white" />
+            </button>
+            <button
+              onClick={handleExport}
+              className="flex gap-1 font-semibold text-white bg-blue-500 p-2 rounded-sm"
+            >
+              <span>Export</span>
+            </button>
+            <button
+              onClick={handlePrint}
+              className="flex gap-1 font-semibold text-white bg-green-500 p-2 rounded-sm"
+            >
+              <span>In</span>
+            </button>
+          </div>
         )}
       </div>
-      <div className="bg-slate-300 w-full mt-5">
+      <div id="printableArea" className="bg-slate-300 w-full mt-5">
         <table className="table-auto w-full text-center" style={{ tableLayout: 'fixed' }}>
           <thead>
             <tr className="bg-gray-800 text-white border-b-2">
@@ -154,7 +219,7 @@ const ScientificResearchProducts = () => {
                       <table className="table-auto w-full text-left">
                         <tbody>
                           <tr className="py-2">
-                            <td className="font-semibold text-gray-700 w-1/2 py-2">Tên sản phẩm, giải pháp, nhãn hiệu đã được cấp chứng nhận hoặc giới thiệu tại hội chợ, triển lãm</td>
+                            <td className="font-semibold text-gray-700 w-1/2 py-2">Hoạt động</td>
                             <td className="text-gray-600 py-2">{scientificResProd.hoat_dong}</td>
                           </tr>
                           <tr className="py-2">

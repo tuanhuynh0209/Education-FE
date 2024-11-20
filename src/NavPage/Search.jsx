@@ -13,7 +13,37 @@ const Search = () => {
     const [result, setResult] = useState(null);
     const [expandedUserIndex, setExpandedUserIndex] = useState(null);
     const [expandedArticleIndex, setExpandedArticleIndex] = useState(null);
+    const [expandedDocIndex, setExpandedDocIndex] = useState(null);
+    const [expandedInitIndex, setExpandedInitIndex] = useState(null);
+    const [expandedConfIndex, setExpandedConfIndex] = useState(null);
+    const [expandedRepIndex, setExpandedRepIndex] = useState(null);
+    const [expandedCouIndex, setExpandedCouIndex] = useState(null);
+    const [expandedProIndex, setExpandedProIndex] = useState(null);
+    const [expandedTpcIndex, setExpandedTpcIndex] = useState(null);
 
+    const toggleInitExpand = (index) => {
+        setExpandedInitIndex(expandedInitIndex === index ? null : index);
+    };
+    const toggleConfExpand = (index) => {
+        setExpandedConfIndex(expandedConfIndex === index ? null : index);
+    };
+
+    const toggleRepExpand = (index) => {
+        setExpandedRepIndex(expandedRepIndex === index ? null : index);
+    };
+    const toggleCouExpand = (index) => {
+        setExpandedCouIndex(expandedCouIndex === index ? null : index);
+    };
+    const toggleProExpand = (index) => {
+        setExpandedProIndex(expandedProIndex === index ? null : index);
+    };
+
+    const toggleTpcleExpand = (index) => {
+        setExpandedTpcIndex(expandedTpcIndex === index ? null : index);
+    };
+    const toggleDocExpand = (index) => {
+        setExpandedDocIndex(expandedDocIndex === index ? null : index);
+    };
     const toggleUserExpand = (index) => {
         setExpandedUserIndex(expandedUserIndex === index ? null : index);
     };
@@ -39,6 +69,27 @@ const Search = () => {
     };
     const handleEditUserClick = (userId) => {
         navigate(`/func/information/editInf/${userId}`);
+    };
+    const handleEditDocClick = (docId) => {
+        navigate(`/func/document/editDocument/${docId}`);
+    };
+    const handleEditInitClick = (initId) => {
+        navigate(`/func/initiative/editInitiative/${initId}`);
+    };
+    const handleEditConfClick = (cfsId) => {
+        navigate(`/func/scientificConferences/editConferences/${cfsId}`);
+    };
+    const handleEditRepClick = (repId) => {
+        navigate(`/func/scientificReport/editSciReport/${repId}`);
+    };
+    const handleEditCouClick = (couId) => {
+        navigate(`/func/scientificResearchCouncil/editSciResCou/${couId}`);
+    };
+    const handleEditProdClick = (proId) => {
+        navigate(`/func/scientificResearchProduct/editProduct/${proId}`);
+    };
+    const handleEditTpcClick = (tpcId) => {
+        navigate(`/func/scientificResearchTopic/editSciResTpc/${tpcId}`);
     };
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     useEffect(() => {
@@ -69,6 +120,27 @@ const Search = () => {
         { label: "Tỷ lệ đóng góp", key: "ty_le_dong_gop" },
         { label: "Giờ quy đổi", key: "gio_quy_doi" },
     ];
+    const reportColumns = [
+        { label: "Tên đề tài", key: "ten_de_tai" },
+        { label: "Minh chứng", key: "minh_chung" },
+        { label: "Tên hội nghị", key: "ten_hoi_nghi" },
+        { label: "Đơn vị tổ chức", key: "don_vi_to_chuc" },
+        { label: "Ngày", key: "ngay" },
+        { label: "Phạm vi", key: "pham_vi" },
+        { label: "Giải thưởng", key: "giai_thuong" },
+        { label: "Hình thức", key: "hinh_thuc" },
+        { label: "Giờ quy đổi", key: "gio_quy_doi" },
+        { label: "Tổng số tác giả", key: "tong_so_tac_gia" },
+        { label: "Vai trò", key: "vai_tro" },
+        { label: "Tống số tác giả cùng vai trò", key: "tong_so_tac_gia_vai_tro" },
+        { label: "Tỷ lệ đóng góp", key: "ty_le_dong_gop" },
+        { label: "Giờ quy đổi", key: "gio_quy_doi" },
+    ];
+    const councilColumns = [
+        { label: "Ngày", key: "ngay" },
+        { label: "Vai trò", key: "vai_tro" },
+        { label: "Giờ quy đổi", key: "gio_quy_doi" },
+    ];
     const documentColumns = [
         { label: "Mã số nhân viên", key: "msnv" },
         { label: "Mã tài liệu", key: "ma_tai_lieu" },
@@ -82,6 +154,48 @@ const Search = () => {
         { label: "Vai trò", key: "vai_tro" },
         { label: "Tổng số thành viên", key: "tong_so_thanh_vien" },
         { label: "Tổng số trang phụ trách", key: "tong_so_trang_phu_trach" },
+        { label: "Tỷ lệ đóng góp", key: "ty_le_dong_gop" },
+        { label: "Giờ quy đổi", key: "gio_quy_doi" },
+    ];
+    const conferenceColumns = [
+        // { label: "Mã số nhân viên", key: "msnv" },
+        // { label: "Mã tài liệu", key: "ma_tai_lieu" },
+        // { label: "Hoạt động", key: "hoat_dong" },
+        // { label: "Tên sách", key: "ten_sach" },
+        { label: "Đơn vị tổ chức", key: "don_vi_to_chuc" },
+        { label: "Ngày", key: "ngay" },
+        { label: "Phạm vi", key: "pham_vi" },
+        { label: "Thời lượng", key: "thoi_luong" },
+        { label: "Giờ chuẩn hoạt động", key: "gio_chuan_hoat_dong" },
+        { label: "Giờ quy đổi", key: "gio_quy_doi" },
+    ];
+    const topicColumns = [
+        { label: "Tên đề tài", key: "ten_de_tai" },
+        { label: "Mã số hợp đồng", key: "ma_so_hop_dong" },
+        { label: "Ngày", key: "ngay" },
+        { label: "Giờ chuẩn hoạt động", key: "gio_chuan_hoat_dong" },
+        { label: "Vai trò", key: "vai_tro" },
+        { label: "Số lượng thành viên cùng vai trò", key: "so_luong_thanh_vien_vai_tro" },
+        { label: "Tỷ lệ đóng góp", key: "ty_le_dong_gop" },
+        { label: "Giờ quy đổi", key: "gio_quy_doi" },
+    ];
+    const productColumns = [
+        { label: "Đơn vị cấp chứng nhận", key: "don_vi_cap_chung_nhan" },
+        { label: "Phạm vi", key: "pham_vi" },
+        { label: "Minh chứng", key: "minh_chung" },
+        { label: "Ngày", key: "ngay" },
+        { label: "Giờ chuẩn hoạt động", key: "gio_chuan_hoat_dong" },
+        { label: "Tỷ lệ đóng góp", key: "ty_le_dong_gop" },
+        { label: "Giờ quy đổi", key: "gio_quy_doi" },
+    ];
+    const initiativeColumns = [
+        { label: "Mã số chứng nhận", key: "ma_so_chung_nhan" },
+        { label: "Ngày", key: "ngay" },
+        { label: "Lợi ích", key: "loi_ich" },
+        { label: "Số tiền lợi ích", key: "so_tien_loi_ich" },
+        { label: "Giờ chuẩn hoạt động", key: "gio_chuan_hoat_dong" },
+        { label: "Vai trò", key: "vai_tro" },
+        { label: "Số lượng thành viên cùng vai trò", key: "so_luong_thanh_vien_vai_tro" },
         { label: "Tỷ lệ đóng góp", key: "ty_le_dong_gop" },
         { label: "Giờ quy đổi", key: "gio_quy_doi" },
     ];
@@ -217,7 +331,7 @@ const Search = () => {
                             </table>
                         </div>
                     )}
-                    {result.articles && (
+                    {result.documents && (
                         <div className="mb-8 p-4 border border-gray-300 rounded-lg shadow-sm">
                             <h2 className="text-xl font-bold mb-4">Tài liệu, Sách</h2>
                             <table className="w-full border-collapse border border-gray-300 text-left">
@@ -228,6 +342,9 @@ const Search = () => {
                                         <th className="border border-gray-300 px-4 py-2">Mã tài liệu</th>
                                         <th className="border border-gray-300 px-4 py-2">Hoạt động</th>
                                         <th className="border border-gray-300 px-4 py-2">Tên tài liệu, sách</th>
+                                        <th className="border border-gray-300 px-4 py-2">Chỉnh sửa</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Xóa</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mở rộng</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -238,15 +355,297 @@ const Search = () => {
                                                 <td className="border border-gray-300 px-4 py-2">{document.ma_tai_lieu}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{document.hoat_dong}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{document.ten_sach}</td>
+                                                <td>
+                                                    <button onClick={() => handleEditDocClick(document.ma_tai_lieu)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                                                        <ModeEditOutlineOutlinedIcon className='text-white' />
+                                                    </button>
+                                                </td>
                                                 <td className="p-2">
-                                                    <button onClick={() => toggleArticleExpand(index)}>
-                                                        {expandedArticleIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
+                                                    <button onClick={() => toggleDocExpand(index)}>
+                                                        {expandedDocIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
                                                     </button>
                                                 </td>
                                             </tr>
-                                            <tr className={`transition-all duration-300 ${expandedArticleIndex === index ? '' : 'hidden'}`}>
+                                            <tr className={`transition-all duration-300 ${expandedDocIndex === index ? '' : 'hidden'}`}>
                                                 <td className="p-4" colSpan="7">
                                                     <DetailTable details={document} columns={documentColumns} />
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
+                    {result.topic && (
+                        <div className="mb-8 p-4 border border-gray-300 rounded-lg shadow-sm">
+                            <h2 className="text-xl font-bold mb-4">Nghiên cứu đề tài</h2>
+                            <table className="w-full border-collapse border border-gray-300 text-left">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2">Mã số nhân viên</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Họ tên</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mã đề tài</th>
+                                        <th className="border border-gray-300 px-4 py-2">Hoạt động</th>
+                                        <th className="border border-gray-300 px-4 py-2">Phạm vi cấp độ</th>
+                                        <th className="border border-gray-300 px-4 py-2">Chỉnh sửa</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Xóa</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mở rộng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {result.topic.map((tpc, index) => (
+                                        <React.Fragment key={index}>
+                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                                <td className="border border-gray-300 px-4 py-2">{tpc.msnv}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{tpc.ma_de_tai}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{tpc.hoat_dong}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{tpc.pham_vi_cap_do}</td>
+                                                <td>
+                                                    <button onClick={() => handleEditTpcClick(tpc.ma_de_tai)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                                                        <ModeEditOutlineOutlinedIcon className='text-white' />
+                                                    </button>
+                                                </td>
+                                                <td className="p-2">
+                                                    <button onClick={() => toggleTpcleExpand(index)}>
+                                                        {expandedTpcIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr className={`transition-all duration-300 ${expandedTpcIndex === index ? '' : 'hidden'}`}>
+                                                <td className="p-4" colSpan="7">
+                                                    <DetailTable details={tpc} columns={topicColumns} />
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {result.initiatives && (
+                        <div className="mb-8 p-4 border border-gray-300 rounded-lg shadow-sm">
+                            <h2 className="text-xl font-bold mb-4">Sáng kiến, cải tiến</h2>
+                            <table className="w-full border-collapse border border-gray-300 text-left">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2">Mã số nhân viên</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Họ tên</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mã sáng kiến</th>
+                                        <th className="border border-gray-300 px-4 py-2">Hoạt động</th>
+                                        <th className="border border-gray-300 px-4 py-2">Tên công trình</th>
+                                        <th className="border border-gray-300 px-4 py-2">Chỉnh sửa</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Xóa</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mở rộng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {result.initiatives.map((init, index) => (
+                                        <React.Fragment key={index}>
+                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                                <td className="border border-gray-300 px-4 py-2">{init.msnv}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{init.ma_sang_kien}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{init.hoat_dong}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{init.ten_cong_trinh}</td>
+                                                <td>
+                                                    <button onClick={() => handleEditInitClick(init.ma_sang_kien)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                                                        <ModeEditOutlineOutlinedIcon className='text-white' />
+                                                    </button>
+                                                </td>
+                                                <td className="p-2">
+                                                    <button onClick={() => toggleInitExpand(index)}>
+                                                        {expandedInitIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr className={`transition-all duration-300 ${expandedInitIndex === index ? '' : 'hidden'}`}>
+                                                <td className="p-4" colSpan="7">
+                                                    <DetailTable details={init} columns={initiativeColumns} />
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {result.products && (
+                        <div className="mb-8 p-4 border border-gray-300 rounded-lg shadow-sm">
+                            <h2 className="text-xl font-bold mb-4">Sản phẩm KHCN</h2>
+                            <table className="w-full border-collapse border border-gray-300 text-left">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2">Mã số nhân viên</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Họ tên</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mã sản phẩm</th>
+                                        <th className="border border-gray-300 px-4 py-2">Hoạt động</th>
+                                        <th className="border border-gray-300 px-4 py-2">Tên sản phẩm</th>
+                                        <th className="border border-gray-300 px-4 py-2">Chỉnh sửa</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Xóa</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mở rộng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {result.products.map((prod, index) => (
+                                        <React.Fragment key={index}>
+                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                                <td className="border border-gray-300 px-4 py-2">{prod.msnv}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{prod.ma_san_pham}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{prod.hoat_dong}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{prod.ten_san_pham}</td>
+                                                <td>
+                                                    <button onClick={() => handleEditProdClick(prod.ma_san_pham)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                                                        <ModeEditOutlineOutlinedIcon className='text-white' />
+                                                    </button>
+                                                </td>
+                                                <td className="p-2">
+                                                    <button onClick={() => toggleProExpand(index)}>
+                                                        {expandedProIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr className={`transition-all duration-300 ${expandedProIndex === index ? '' : 'hidden'}`}>
+                                                <td className="p-4" colSpan="7">
+                                                    <DetailTable details={prod} columns={productColumns} />
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {result.councils && (
+                        <div className="mb-8 p-4 border border-gray-300 rounded-lg shadow-sm">
+                            <h2 className="text-xl font-bold mb-4">Hội đồng</h2>
+                            <table className="w-full border-collapse border border-gray-300 text-left">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2">Mã số nhân viên</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Họ tên</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mã hội đồng</th>
+                                        <th className="border border-gray-300 px-4 py-2">Hoạt động</th>
+                                        <th className="border border-gray-300 px-4 py-2">Tên đề tài</th>
+                                        <th className="border border-gray-300 px-4 py-2">Chỉnh sửa</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Xóa</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mở rộng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {result.councils.map((cou, index) => (
+                                        <React.Fragment key={index}>
+                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                                <td className="border border-gray-300 px-4 py-2">{cou.msnv}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{cou.ma_hoi_dong}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{cou.hoat_dong}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{cou.ten_de_tai}</td>
+                                                <td>
+                                                    <button onClick={() => handleEditCouClick(cou.ma_hoi_dong)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                                                        <ModeEditOutlineOutlinedIcon className='text-white' />
+                                                    </button>
+                                                </td>
+                                                <td className="p-2">
+                                                    <button onClick={() => toggleCouExpand(index)}>
+                                                        {expandedCouIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr className={`transition-all duration-300 ${expandedCouIndex === index ? '' : 'hidden'}`}>
+                                                <td className="p-4" colSpan="7">
+                                                    <DetailTable details={cou} columns={councilColumns} />
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {result.reports && (
+                        <div className="mb-8 p-4 border border-gray-300 rounded-lg shadow-sm">
+                            <h2 className="text-xl font-bold mb-4">Báo báo khoa học</h2>
+                            <table className="w-full border-collapse border border-gray-300 text-left">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2">Mã số nhân viên</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Họ tên</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mã báo cáo</th>
+                                        <th className="border border-gray-300 px-4 py-2">Hoạt động</th>
+                                        <th className="border border-gray-300 px-4 py-2">Tên bài fulltext</th>
+                                        <th className="border border-gray-300 px-4 py-2">Chỉnh sửa</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Xóa</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mở rộng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {result.reports.map((rep, index) => (
+                                        <React.Fragment key={index}>
+                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                                <td className="border border-gray-300 px-4 py-2">{rep.msnv}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{rep.ma_bao_cao}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{rep.hoat_dong}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{rep.ten_bai_fulltext}</td>
+                                                <td>
+                                                    <button onClick={() => handleEditRepClick(rep.ma_bao_cao)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                                                        <ModeEditOutlineOutlinedIcon className='text-white' />
+                                                    </button>
+                                                </td>
+                                                <td className="p-2">
+                                                    <button onClick={() => toggleRepExpand(index)}>
+                                                        {expandedRepIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr className={`transition-all duration-300 ${expandedRepIndex === index ? '' : 'hidden'}`}>
+                                                <td className="p-4" colSpan="7">
+                                                    <DetailTable details={rep} columns={reportColumns} />
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    {result.conferences && (
+                        <div className="mb-8 p-4 border border-gray-300 rounded-lg shadow-sm">
+                            <h2 className="text-xl font-bold mb-4">Hội nghị khoa học</h2>
+                            <table className="w-full border-collapse border border-gray-300 text-left">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2">Mã số nhân viên</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Họ tên</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mã hội nghị</th>
+                                        <th className="border border-gray-300 px-4 py-2">Hoạt động</th>
+                                        <th className="border border-gray-300 px-4 py-2">Tên hội nghị</th>
+                                        <th className="border border-gray-300 px-4 py-2">Chỉnh sửa</th>
+                                        {/* <th className="border border-gray-300 px-4 py-2">Xóa</th> */}
+                                        <th className="border border-gray-300 px-4 py-2">Mở rộng</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {result.conferences.map((conf, index) => (
+                                        <React.Fragment key={index}>
+                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                                <td className="border border-gray-300 px-4 py-2">{conf.msnv}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{conf.ma_hoi_nghi}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{conf.hoat_dong}</td>
+                                                <td className="border border-gray-300 px-4 py-2">{conf.ten_hoi_nghi}</td>
+                                                <td>
+                                                    <button onClick={() => handleEditConfClick(conf.ma_hoi_nghi)} className='font-semibold text-white bg-[#F9A150] p-2 rounded-sm'>
+                                                        <ModeEditOutlineOutlinedIcon className='text-white' />
+                                                    </button>
+                                                </td>
+                                                <td className="p-2">
+                                                    <button onClick={() => toggleConfExpand(index)}>
+                                                        {expandedConfIndex === index ? <ArrowDropUpOutlined /> : <ArrowDropDownOutlined />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr className={`transition-all duration-300 ${expandedConfIndex === index ? '' : 'hidden'}`}>
+                                                <td className="p-4" colSpan="7">
+                                                    <DetailTable details={conf} columns={conferenceColumns} />
                                                 </td>
                                             </tr>
                                         </React.Fragment>

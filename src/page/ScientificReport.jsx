@@ -5,7 +5,7 @@ import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import * as XLSX from 'xlsx'; // Import thư viện xlsx
 const ScientificReport = () => {
 
   const navigate = useNavigate();
@@ -94,6 +94,63 @@ const ScientificReport = () => {
     setIsLoggedIn(!!userId); // Kiểm tra trạng thái đăng nhập
   }, []);
 
+  // Xuất dữ liệu ra file Excel
+  const exportToExcel = () => {
+    // Dữ liệu cần xuất
+    const formattedData = report.map((rpt, index) => ({
+      "STT": index + 1,
+      "Họ và tên": rpt.ho_ten || "Chưa cập nhật",
+      "Mã số nhân viên": rpt.msnv || "Chưa cập nhật",
+      "Mã báo cáo": rpt.ma_bao_cao || "Chưa cập nhật",
+      "Tên bài fulltext đã báo cáo": rpt.ten_bai_fulltext || "Chưa cập nhật",
+      "Hoạt động": rpt.hoat_dong || "Chưa cập nhật",
+      "Tên đề tài đã báo cáo": rpt.ten_de_tai || "Chưa cập nhật",
+      "Minh chứng": rpt.minh_chung || "Chưa cập nhật",
+      "Tên hội nghị khoa học đã báo cáo": rpt.ten_hoi_nghi || "Chưa cập nhật",
+      "Đơn vị tổ chức": rpt.don_vi_to_chuc || "Chưa cập nhật",
+      "Ngày": rpt.ngay || "Chưa cập nhật",
+      "Phạm vi": rpt.pham_vi || "Chưa cập nhật",
+      "Giải thưởng đạt được(nếu có)": rpt.giai_thuong || "Chưa cập nhật",
+      "Hình thức báo cáo": rpt.hinh_thuc || "Chưa cập nhật",
+      "Giờ chuẩn quy đổi theo vai trò(tạm tính)": rpt.gio_quy_doi || "Chưa cập nhật",
+      "Tống số tác giả bài fulltext": rpt.tong_so_tac_gia || "Chưa cập nhật",
+      "Vai trò trong bài fulltext": rpt.vai_tro || "Chưa cập nhật",
+      "Tổng số tác giả cùng vai trò": rpt.tong_so_tac_gia_vai_tro || "Chưa cập nhật",
+      "Tỷ lệ đóng góp": rpt.ty_le_dong_gop || "Chưa cập nhật",
+      "Giờ chuẩn quy đổi theo vai trò": rpt.gio_quy_doi_vai_tro || "Chưa cập nhật"
+    }));
+
+    // Tạo workbook và worksheet
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "BaoCaoKhoaHoc");
+
+    // Xuất file Excel
+    XLSX.writeFile(workbook, "BaoCaoKhoaHoc.xlsx");
+  };
+  const handlePrint = () => {
+    // Lọc hoặc chuẩn bị nội dung cần in
+    const printContent = document.getElementById("printableArea");
+    const newWindow = window.open("", "_blank");
+    newWindow.document.write(`
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid black; padding: 8px; text-align: center; }
+                th { background-color: #f2f2f2; }
+            </style>
+        </head>
+        <body>
+            ${printContent.innerHTML}
+        </body>
+        </html>
+    `);
+    newWindow.document.close();
+    newWindow.print();
+  };
+
   return (
     <div className="mx-8 bg-orange-400 w-full">
       <div className="bg-slate-400 w-full relative p-2">
@@ -101,16 +158,29 @@ const ScientificReport = () => {
           BÁO CÁO KHOA HỌC DẠNG BÀI FULLTEXT TẠI HỘI NGHỊ, HỘI THẢO SINH HOẠT CHUYÊN MÔN
         </span>
         {isLoggedIn && (
-          <button
-            onClick={handleAddClick}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
-          >
-            <span>Thêm</span>
-            <LibraryAddOutlinedIcon className="text-white" />
-          </button>
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-4">
+            <button
+              onClick={handleAddClick}
+              className="flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
+            >
+              <LibraryAddOutlinedIcon className="text-white" />
+            </button>
+            <button
+              onClick={exportToExcel}
+              className="flex gap-1 font-semibold text-white bg-blue-500 p-2 rounded-sm"
+            >
+              <span>Export</span>
+            </button>
+            <button
+              onClick={handlePrint}
+              className="flex gap-1 font-semibold text-white bg-green-500 p-2 rounded-sm"
+            >
+              <span>In</span>
+            </button>
+          </div>
         )}
       </div>
-      <div className="bg-slate-300 w-full mt-5">
+      <div id='printableArea' className="bg-slate-300 w-full mt-5">
         <table className="table-auto w-full text-center" style={{ tableLayout: 'fixed' }}>
           <thead>
             <tr className="bg-gray-800 text-white border-b-2">

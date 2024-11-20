@@ -5,7 +5,8 @@ import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import DetailTable from '../component/DetailTable';
+import * as XLSX from 'xlsx';
 
 const Document = () => {
 
@@ -79,7 +80,6 @@ const Document = () => {
       }
     }
   };
-
   // điều hướng
   const handleAddClick = () => {
     navigate(`/func/document/addDocument`);
@@ -97,7 +97,77 @@ const Document = () => {
     const userId = localStorage.getItem("userId");
     setIsLoggedIn(!!userId); // Kiểm tra trạng thái đăng nhập
   }, []);
-  
+
+  const documentColumns = [
+    { label: "Hoạt động", key: "hoat_dong" },
+    { label: "Tái bản", key: "tai_ban" },
+    { label: "Tổng số trang sách", key: "tong_so_trang" },
+    { label: "Ngôn ngữ", key: "ngon_ngu" },
+    { label: "Ngày xuất bản", key: "ngay_xuat_ban" },
+    { label: "Giờ chuẩn hoạt động", key: "gio_chuan_hoat_dong" },
+    { label: "Vai trò", key: "vai_tro" },
+    { label: "Tổng số thành viên", key: "tong_so_thanh_vien" },
+    { label: "Tổng số trang phụ trách", key: "tong_so_trang_phu_trach" },
+    { label: "Tỷ lệ đóng góp", key: "ty_le_dong_gop" },
+    { label: "Giờ quy đổi", key: "gio_quy_doi" },
+  ];
+
+  const handleExport = () => {
+    if (documents.length === 0) {
+      alert("Không có dữ liệu để export!");
+      return;
+    }
+    // Chuẩn bị dữ liệu cho file Excel
+    const formattedData = documents.map((doc, index) => ({
+      STT: index + 1,
+      "Họ và Tên": doc.ho_ten,
+      "Mã số nhân viên": doc.msnv,
+      "Mã tài liệu": doc.ma_tai_lieu,
+      "Tên sách, tài liệu": doc.ten_sach,
+      "Hoạt động": doc.hoat_dong || "Chưa cập nhật",
+      "Tái bản": doc.tai_ban || "Chưa cập nhật",
+      "Tổng số trang sách": doc.tong_so_trang || "Chưa cập nhật",
+      "Ngôn ngữ": doc.ngon_ngu || "Chưa cập nhật",
+      "Ngày xuất bản": doc.ngay_xuat_ban || "Chưa cập nhật",
+      "Giờ chuẩn hoạt động": doc.gio_chuan_hoat_dong || "Chưa cập nhật",
+      "Vai trò": doc.vai_tro || "Chưa cập nhật",
+      "Tổng số thành viên": doc.tong_so_thanh_vien || "Chưa cập nhật",
+      "Tổng số trang phụ trách": doc.tong_so_trang_phu_trach || "Chưa cập nhật",
+      "Tỷ lệ đóng góp": doc.ty_le_dong_gop || "Chưa cập nhật",
+      "Giờ quy đổi": doc.gio_quy_doi || "Chưa cập nhật",
+    }));
+
+    // Tạo một worksheet và workbook
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Document");
+
+    // Xuất file Excel
+    XLSX.writeFile(workbook, "Document.xlsx");
+  };
+
+  const handlePrint = () => {
+    // Lọc hoặc chuẩn bị nội dung cần in
+    const printContent = document.getElementById("printableArea");
+    const newWindow = window.open("", "_blank");
+    newWindow.document.write(`
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid black; padding: 8px; text-align: center; }
+                th { background-color: #f2f2f2; }
+            </style>
+        </head>
+        <body>
+            ${printContent.innerHTML}
+        </body>
+        </html>
+    `);
+    newWindow.document.close();
+    newWindow.print();
+  };
   return (
     <div className="mx-8 bg-orange-400 w-full">
       <div className="bg-slate-400 w-full relative p-2">
@@ -105,17 +175,30 @@ const Document = () => {
           SÁCH, TÀI LIỆU
         </span>
         {isLoggedIn && (
-          <button
-            onClick={handleAddClick}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
-          >
-            <span>Thêm</span>
-            <LibraryAddOutlinedIcon className="text-white" />
-          </button>
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-4">
+            <button
+              onClick={handleAddClick}
+              className="flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
+            >
+              <LibraryAddOutlinedIcon className="text-white" />
+            </button>
+            <button
+              onClick={handleExport}
+              className="flex gap-1 font-semibold text-white bg-blue-500 p-2 rounded-sm"
+            >
+              <span>Export</span>
+            </button>
+            <button
+              onClick={handlePrint}
+              className="flex gap-1 font-semibold text-white bg-green-500 p-2 rounded-sm"
+            >
+              <span>In</span>
+            </button>
+          </div>
         )}
       </div>
 
-      <div className="bg-slate-300 w-full mt-5">
+      <div id='printableArea' className="bg-slate-300 w-full mt-5">
         <table className="table-auto w-full text-center" style={{ tableLayout: 'fixed' }}>
           <thead>
             <tr className="bg-gray-800 text-white border-b-2">
@@ -157,67 +240,8 @@ const Document = () => {
                   </td>
                 </tr>
                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
-
                   <td className="p-4" colSpan="7">
-                    <div className="bg-gray-100 rounded-lg shadow-lg p-6">
-                      <table className="table-auto w-full text-left">
-                        <tbody>
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 w-1/2 py-2">Hoạt động</td>
-                            <td className="text-gray-600 py-2">{document.hoat_dong || "Chưa cập nhật"}</td>
-                          </tr>
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 w-1/2 py-2">Tái bản, xuất bản</td>
-                            <td className="text-gray-600 py-2">{document.tai_ban || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Tống số trang sách, tài liệu</td>
-                            <td className="text-gray-600 py-2">{document.tong_so_trang || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Ngôn ngữ xuất bản</td>
-                            <td className="text-gray-600 py-2">{document.ngon_ngu || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Ngày xuất bản, thẩm định, nghiệm thu</td>
-                            <td className="text-gray-600 py-2">{document.ngay_xuat_ban || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Giờ chuẩn hoạt động</td>
-                            <td className="text-gray-600 py-2">{document.gio_chuan_hoat_dong || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Vai trò</td>
-                            <td className="text-gray-600 py-2">{document.vai_tro || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Tổng số thành viên ban biên soạn</td>
-                            <td className="text-gray-600 py-2">{document.tong_so_thanh_vien || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Tổng số trang phụ trách</td>
-                            <td className="text-gray-600 py-2">{document.tong_so_trang_phu_trach || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Tỉ lệ đóng góp</td>
-                            <td className="text-gray-600 py-2">{document.ty_le_dong_gop || "Chưa cập nhật"}</td>
-                          </tr>
-
-                          <tr className="py-2">
-                            <td className="font-semibold text-gray-700 py-2">Giờ chuẩn quy đổi theo vai trò</td>
-                            <td className="text-gray-600 py-2">{document.gio_quy_doi || "Chưa cập nhật"}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                    <DetailTable details={document} columns={documentColumns} />
                   </td>
                 </tr>
               </React.Fragment>

@@ -21,14 +21,6 @@ const TopNav = () => {
         navigate('/login');
     };
 
-    // useEffect(() => {
-    //     const storedUsername = localStorage.getItem('username');
-    //     if (storedUsername) {
-    //         setIsLoggedIn(true);
-    //         setUsername(storedUsername);
-    //     }
-    // }, []);
-
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {

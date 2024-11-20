@@ -5,7 +5,7 @@ import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import * as XLSX from 'xlsx';
 const ScientificResearchCouncil = () => {
 
   const navigate = useNavigate();
@@ -95,6 +95,56 @@ const ScientificResearchCouncil = () => {
     setIsLoggedIn(!!userId); // Kiểm tra trạng thái đăng nhập
   }, []);
 
+  const handleExport = () => {
+    if (council.length === 0) {
+      alert("Không có dữ liệu để export!");
+      return;
+    }
+
+    // Chuẩn bị dữ liệu cho file Excel
+    const formattedData = council.map((cou, index) => ({
+      STT: index + 1,
+      "Họ và Tên": cou.ho_ten,
+      "Mã số nhân viên": cou.msnv,
+      "Mã hội đồng": cou.ma_hoi_dong,
+      "Tên đề tài": cou.ten_de_tai,
+      "Số quyết định": cou.so_quyet_dinh || "Chưa cập nhật",
+      "Ngày": cou.ngay || "Chưa cập nhật",
+      "Vai trò": cou.vai_tro || "Chưa cập nhật",
+      "Giờ quy đổi": cou.gio_quy_doi || "Chưa cập nhật",
+    }));
+
+    // Tạo một worksheet và workbook
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Scientific Conferences");
+
+    // Xuất file Excel
+    XLSX.writeFile(workbook, "ScientificResCouncil.xlsx");
+  };
+  const handlePrint = () => {
+    // Lọc hoặc chuẩn bị nội dung cần in
+    const printContent = document.getElementById("printableArea");
+    const newWindow = window.open("", "_blank");
+    newWindow.document.write(`
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                table { width: 100%; border-collapse: collapse; }
+                th, td { border: 1px solid black; padding: 8px; text-align: center; }
+                th { background-color: #f2f2f2; }
+            </style>
+        </head>
+        <body>
+            ${printContent.innerHTML}
+        </body>
+        </html>
+    `);
+    newWindow.document.close();
+    newWindow.print();
+  };
+
   return (
     <div className="mx-8 bg-orange-400 w-full">
       <div className="bg-slate-400 w-full relative p-2">
@@ -102,16 +152,29 @@ const ScientificResearchCouncil = () => {
           THAM GIA HỘI ĐỒNG ĐÁNH GIÁ, NGHIỆM THU ĐỀ TÀI NCKH CẤP CƠ SỞ
         </span>
         {isLoggedIn && (
-          <button
-            onClick={handleAddClick}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
-          >
-            <span>Thêm</span>
-            <LibraryAddOutlinedIcon className="text-white" />
-          </button>
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-4">
+            <button
+              onClick={handleAddClick}
+              className="flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
+            >
+              <LibraryAddOutlinedIcon className="text-white" />
+            </button>
+            <button
+              onClick={handleExport}
+              className="flex gap-1 font-semibold text-white bg-blue-500 p-2 rounded-sm"
+            >
+              <span>Export</span>
+            </button>
+            <button
+              onClick={handlePrint}
+              className="flex gap-1 font-semibold text-white bg-green-500 p-2 rounded-sm"
+            >
+              <span>In</span>
+            </button>
+          </div>
         )}
       </div>
-      <div className="bg-slate-300 w-full mt-5">
+      <div id='printableArea' className="bg-slate-300 w-full mt-5">
         <table className="table-auto w-full text-center" style={{ tableLayout: 'fixed' }}>
           <thead>
             <tr className="bg-gray-800 text-white border-b-2">

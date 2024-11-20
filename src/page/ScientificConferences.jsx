@@ -5,6 +5,8 @@ import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import axios from 'axios';
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DetailTable from '../component/DetailTable';
+import * as XLSX from 'xlsx';
 
 
 const ScientificConferences = () => {
@@ -95,6 +97,71 @@ const ScientificConferences = () => {
         const userId = localStorage.getItem("userId");
         setIsLoggedIn(!!userId); // Kiểm tra trạng thái đăng nhập
     }, []);
+    const conferenceColumns = [
+        // { label: "Mã số nhân viên", key: "msnv" },
+        // { label: "Mã tài liệu", key: "ma_tai_lieu" },
+        { label: "Hoạt động", key: "hoat_dong" },
+        // { label: "Tên sách", key: "ten_sach" },
+        { label: "Đơn vị tổ chức", key: "don_vi_to_chuc" },
+        { label: "Ngày", key: "ngay" },
+        { label: "Phạm vi", key: "pham_vi" },
+        { label: "Thời lượng tham dự (đơn vị tính: buổi)", key: "thoi_luong" },
+        { label: "Giờ chuẩn hoạt động", key: "gio_chuan_hoat_dong" },
+        { label: "Giờ chuẩn quy đổi theo vai trò(tạm tính)", key: "gio_quy_doi" },
+    ];
+
+    const handleExport = () => {
+        if (conferences.length === 0) {
+            alert("Không có dữ liệu để export!");
+            return;
+        }
+        // Chuẩn bị dữ liệu cho file Excel
+        const formattedData = conferences.map((conf, index) => ({
+            STT: index + 1,
+            "Họ và Tên": conf.ho_ten,
+            "Mã số nhân viên": conf.msnv,
+            "Mã hội nghị": conf.ma_hoi_nghi,
+            "Tên hội nghị": conf.ten_hoi_nghi,
+            "Hoạt động": conf.hoat_dong || "Chưa cập nhật",
+            "Đơn vị tổ chức": conf.don_vi_to_chuc || "Chưa cập nhật",
+            "Ngày": conf.ngay || "Chưa cập nhật",
+            "Phạm vi": conf.pham_vi || "Chưa cập nhật",
+            "Thời lượng": conf.thoi_luong || "Chưa cập nhật",
+            "Giờ chuẩn hoạt động": conf.gio_chuan_hoat_dong || "Chưa cập nhật",
+            "Giờ quy đổi": conf.gio_quy_doi || "Chưa cập nhật",
+        }));
+
+        // Tạo một worksheet và workbook
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Scientific Conferences");
+
+        // Xuất file Excel
+        XLSX.writeFile(workbook, "ScientificConferences.xlsx");
+    };
+
+    const handlePrint = () => {
+        // Lọc hoặc chuẩn bị nội dung cần in
+        const printContent = document.getElementById("printableArea");
+        const newWindow = window.open("", "_blank");
+        newWindow.document.write(`
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { border: 1px solid black; padding: 8px; text-align: center; }
+                    th { background-color: #f2f2f2; }
+                </style>
+            </head>
+            <body>
+                ${printContent.innerHTML}
+            </body>
+            </html>
+        `);
+        newWindow.document.close();
+        newWindow.print();
+    };
 
     return (
         <div className="mx-8 bg-orange-400 w-full">
@@ -103,16 +170,29 @@ const ScientificConferences = () => {
                     THAM GIA HỘI NGHỊ KHOA HỌC
                 </span>
                 {isLoggedIn && (
-                    <button
-                        onClick={handleAddClick}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
-                    >
-                        <span>Thêm</span>
-                        <LibraryAddOutlinedIcon className="text-white" />
-                    </button>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex gap-4">
+                        <button
+                            onClick={handleAddClick}
+                            className="flex gap-1 font-semibold text-white bg-[#F9A150] p-2 rounded-sm"
+                        >
+                            <LibraryAddOutlinedIcon className="text-white" />
+                        </button>
+                        <button
+                            onClick={handleExport}
+                            className="flex gap-1 font-semibold text-white bg-blue-500 p-2 rounded-sm"
+                        >
+                            <span>Export</span>
+                        </button>
+                        <button
+                            onClick={handlePrint}
+                            className="flex gap-1 font-semibold text-white bg-green-500 p-2 rounded-sm"
+                        >
+                            <span>In</span>
+                        </button>
+                    </div>
                 )}
             </div>
-            <div className="bg-slate-300 w-full mt-5">
+            <div id="printableArea" className="bg-slate-300 w-full mt-5">
                 <table className="table-auto w-full text-center" style={{ tableLayout: 'fixed' }}>
                     <thead>
                         <tr className="bg-gray-800 text-white border-b-2">
@@ -153,50 +233,9 @@ const ScientificConferences = () => {
                                     </td>
                                 </tr>
                                 <tr className={`transition-all duration-300 ${expandedIndex === index ? '' : 'hidden'}`}>
-
                                     <td className="p-4" colSpan="7">
-                                        <div className="bg-gray-100 rounded-lg shadow-lg p-6">
-                                            <table className="table-auto w-full text-left">
-                                                <tbody>
-                                                    <tr className="py-2">
-                                                        <td className="font-semibold text-gray-700 w-1/2 py-2">Hoạt động</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.hoat_dong || "Chưa cập nhật"}</td>
-                                                    </tr>
-                                                    <tr className="py-2">
-                                                        <td className="font-semibold text-gray-700 w-1/2 py-2">Đơn vị tổ chức</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.don_vi_to_chuc}</td>
-                                                    </tr>
-
-                                                    <tr className="py-2">
-                                                        <td className="font-semibold text-gray-700 py-2">Ngày</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.ngay}</td>
-                                                    </tr>
-
-                                                    <tr className="py-2">
-                                                        <td className="font-semibold text-gray-700 py-2">Phạm vi</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.pham_vi}</td>
-                                                    </tr>
-
-                                                    <tr className="py-2">
-                                                        <td className="font-semibold text-gray-700 py-2">Thời lượng tham dự (đơn vị tính: buổi)</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.thoi_luong}</td>
-                                                    </tr>
-
-                                                    <tr className="py-2">
-                                                        <td className="font-semibold text-gray-700 py-2">Giờ chuẩn hoạt động</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.gio_chuan_hoat_dong}</td>
-                                                    </tr>
-
-                                                    <tr className="py-2">
-                                                        <td className="font-semibold text-gray-700 py-2">Giờ chuẩn quy đổi theo vai trò(tạm tính)</td>
-                                                        <td className="text-gray-600 py-2">{scientificCfs.gio_quy_doi}</td>
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <DetailTable details={scientificCfs} columns={conferenceColumns} />
                                     </td>
-
                                 </tr>
                             </React.Fragment>
                         ))}
