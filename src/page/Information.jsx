@@ -124,7 +124,7 @@ const Information = () => {
             onClick={handlePrint}
             className="flex gap-1 font-semibold text-white bg-green-500 p-2 rounded-sm"
           >
-            <span>In</span>
+            <span>Print</span>
           </button>
 
         </div>
