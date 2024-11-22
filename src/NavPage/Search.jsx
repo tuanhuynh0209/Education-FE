@@ -251,7 +251,7 @@ const Search = () => {
                                 <tbody>
                                     {result.user.map((user, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{user.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{user.ho_ten}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{user.nam_ap_dung}</td>
@@ -304,7 +304,7 @@ const Search = () => {
                                 <tbody>
                                     {result.articles.map((baiBao, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{baiBao.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{baiBao.ma_bai_bao}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{baiBao.ten_bai_bao}</td>
@@ -350,7 +350,7 @@ const Search = () => {
                                 <tbody>
                                     {result.documents.map((document, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{document.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{document.ma_tai_lieu}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{document.hoat_dong}</td>
@@ -397,7 +397,7 @@ const Search = () => {
                                 <tbody>
                                     {result.topic.map((tpc, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{tpc.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{tpc.ma_de_tai}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{tpc.hoat_dong}</td>
@@ -443,7 +443,7 @@ const Search = () => {
                                 <tbody>
                                     {result.initiatives.map((init, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{init.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{init.ma_sang_kien}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{init.hoat_dong}</td>
@@ -489,7 +489,7 @@ const Search = () => {
                                 <tbody>
                                     {result.products.map((prod, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{prod.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{prod.ma_san_pham}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{prod.hoat_dong}</td>
@@ -535,7 +535,7 @@ const Search = () => {
                                 <tbody>
                                     {result.councils.map((cou, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{cou.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{cou.ma_hoi_dong}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{cou.hoat_dong}</td>
@@ -581,7 +581,7 @@ const Search = () => {
                                 <tbody>
                                     {result.reports.map((rep, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{rep.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{rep.ma_bao_cao}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{rep.hoat_dong}</td>
@@ -627,7 +627,7 @@ const Search = () => {
                                 <tbody>
                                     {result.conferences.map((conf, index) => (
                                         <React.Fragment key={index}>
-                                            <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                            <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                                 <td className="border border-gray-300 px-4 py-2">{conf.msnv}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{conf.ma_hoi_nghi}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{conf.hoat_dong}</td>

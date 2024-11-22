@@ -184,7 +184,7 @@ const Initiative = () => {
           <tbody>
             {initatives.map((initiative, index) => (
               <React.Fragment key={index}>
-                <tr className="bg-gray-800 text-white border-b-2 border-white">
+                <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                   <td className="p-2">{index + 1}</td>
                   <td className="p-2">{initiative.ho_ten || "Chưa cập nhật"}</td>
                   <td className="p-2">{initiative.msnv || "Chưa cập nhật"}</td>

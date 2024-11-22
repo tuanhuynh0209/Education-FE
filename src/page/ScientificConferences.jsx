@@ -209,7 +209,7 @@ const ScientificConferences = () => {
                     <tbody>
                         {conferences.map((scientificCfs, index) => (
                             <React.Fragment key={index}>
-                                <tr className="bg-gray-800 text-white border-b-2 border-white">
+                                <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                                     <td className="p-2">{index + 1}</td>
                                     <td className="p-2">{scientificCfs.ho_ten}</td>
                                     <td className="p-2">{scientificCfs.msnv}</td>

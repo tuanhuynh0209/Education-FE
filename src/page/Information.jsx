@@ -147,7 +147,7 @@ const Information = () => {
           <tbody>
             {users.map((user, index) => (
               <React.Fragment key={index}>
-                <tr className="bg-gray-800 text-white border-b-2 border-white">
+                <tr className="bg-[#4682B4] text-white border-b-2 border-white">
                   <td className="p-2">{user.nam_ap_dung || "Chưa cập nhật"}</td>
                   <td className="p-2">{user.ho_ten}</td>
                   <td className="p-2">{user.msnv}</td>
