@@ -7,6 +7,7 @@ const RegisterPage = () => {
         msnv: '',
         ho_ten: '',
         mat_khau: '',
+        confirmPassword: '',
     });
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
@@ -21,8 +22,25 @@ const RegisterPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // check độ dài mật khẩu trên 8 ký tự và kèm ký tự đặc biệt
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+        if(formData.mat_khau.length < 8 || !specialCharRegex.test(formData.mat_khau)){
+            setErrorMessage("Mật khẩu phải dài hơn 8 ký tự và phải có ít nhất 1 ký tự đặc biệt");
+            setSuccessMessage("");
+            return;
+        }
+        // check khớp khẩu và confirm
+        if(formData.mat_khau !== formData.confirmPassword){
+            setErrorMessage("Mật khẩu và nhập lại mật khẩu không khớp");
+            setSuccessMessage("");
+            return;
+        }
         try {
-            await axios.post('http://localhost:3001/education/register', formData);
+            await axios.post('http://localhost:3001/education/register', {
+                msnv: formData.msnv,
+                ho_ten: formData.ho_ten,
+                mat_khau: formData.mat_khau
+            });
             setSuccessMessage('Đăng ký thành công!');
             setErrorMessage('');
             setTimeout(() => {
@@ -68,6 +86,15 @@ const RegisterPage = () => {
                         onChange={handleChange}
                         placeholder="Mật khẩu"
                         className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300"
+                        required
+                    />
+                    <input
+                        type='password'
+                        name='confirmPassword'
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder='Nhập lại mật khẩu'
+                        className='w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 transition duration-300'
                         required
                     />
                     <button type="submit" className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-3 rounded-md hover:bg-gradient-to-l hover:from-orange-600 hover:to-yellow-600 transition duration-300">

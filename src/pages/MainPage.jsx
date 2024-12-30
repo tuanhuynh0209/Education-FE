@@ -40,7 +40,7 @@ const MainPage = () => {
                 <div className="absolute inset-0 bg-black opacity-30 rounded-b-3xl"></div>
                 <div className="relative z-10 text-center text-white">
                     <p className="text-6xl font-bold">Quản lý đào tạo và nghiên cứu khoa học</p>
-                    <p className="mt-2">
+                    <p className="mt-2 text-4xl font-bold">
                         Bệnh viện Đại Học Y Dược TP Hồ Chí Minh - Cơ Sở 2
                     </p>
                 </div>
